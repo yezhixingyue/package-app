@@ -4,7 +4,12 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  routes: [
-    { path: '/', component: '@/pages/index' },
-  ],
+  antd: {},
+  theme: {
+    'primary-color': '#428dfa',
+    'error-color': '#ff3769',
+  },
+  // routes: [
+  //   { path: '/', component: '@/pages/index' },
+  // ],
 });

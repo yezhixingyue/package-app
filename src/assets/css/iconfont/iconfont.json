@@ -1,0 +1,30 @@
+{
+  "id": "2030930",
+  "name": "打包系统",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "17024281",
+      "name": "密码",
+      "font_class": "mima",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "17024286",
+      "name": "手机",
+      "font_class": "shouji",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "17108200",
+      "name": "电话",
+      "font_class": "dianhua",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    }
+  ]
+}
