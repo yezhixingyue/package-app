@@ -1,8 +1,8 @@
 import styles from './index.less';
 import React from 'react'
-import LoginComp from '../../components/LoginComps/LoginComp';
+import LoginComp from '../../components/container/LoginContainer';
 
-export default function index() {
+function index() {
   return (
     <div className={styles.loginWrap}>
       <ul>
@@ -15,3 +15,6 @@ export default function index() {
   )
 }
 
+index.title = '用户登录';
+
+export default index;
