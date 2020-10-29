@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2020-04-13 09:21:56
- * @LastEditTime: 2020-05-26 09:07:26
- * @LastEditors: your name
+ * @LastEditTime: 2020-10-29 13:58:58
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \orderList\src\assets\js\validator\validateCheck.js
+ * @FilePath: /src/assets/js/validator/validateCheck.ts
  */
 import Validator from '@/assets/js/validator/vueValidator'; // 策略模式引入
 
@@ -15,7 +15,7 @@ import Validator from '@/assets/js/validator/vueValidator'; // 策略模式引�
  * @param {*} rules 需要校验的规则
  * @returns 返回校验结果：true或错误信息
  */
-function validateFunc(value, rules) {
+function validateFunc(value: any, rules: any) {
   // 策咯模式函数1
   const validator = new Validator();
   validator.add(value, rules);
@@ -31,7 +31,7 @@ function validateFunc(value, rules) {
  * @param {*} cb    回调函数
  * @returns     如果没有报错信息则返回true，如果有报错则把报错信息作为参数执行回调函数
  */
-function validateCheck(value, rules, cb) {
+function validateCheck(value: string, rules: { strategy: string; errorMsg: string; }[], cb: { (err: string): string; (err: string): string; (arg0: any): void; }) {
   // 策咯模式函数2
   // console.log(value, rules, cb);
   const checkMsg = validateFunc(value, rules);

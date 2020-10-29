@@ -135,3 +135,159 @@ table {
 .is-black {
   color: #333333;
 }
+
+
+// 弹窗样式设置
+
+.mp-show-confirm-message-box {
+  width: 370px !important;
+  > .ant-modal-content {
+    // height: 100%;
+    border-radius: 5px;
+    > .ant-modal-body {
+      min-height: 220px;
+      width: 370px;
+      > .ant-modal-confirm-body-wrapper {
+        position: relative;
+        min-height: 164px;
+        padding-bottom: 48px;
+        > .ant-modal-confirm-body {
+          text-align: center;
+          padding-top: 10px;
+          > .anticon {
+            display: inline-block;
+            float: none;
+            // vertical-align: top;
+            
+            &.warn {
+              height: 38px;
+              width: 45px;
+              background: url(./assets/images/warn.png) no-repeat center center/100% 100%;
+            }
+          }
+          > .ant-modal-confirm-title {
+            display: inline-block;
+            font-size: 20px;
+            color: #3b3d40;
+          }
+          > .ant-modal-confirm-content {
+            margin: 12px 0;
+          }
+        }
+        > .ant-modal-confirm-btns {
+          text-align: center;
+          float: none;
+          display: flex;
+          flex-direction: row-reverse;
+          margin: 0;
+          position: absolute;
+          bottom: 5px;
+          left: 50%;
+          transform: translateX(-50%);
+          > button {
+            margin: 0 10px;
+            width: 108px;
+            height: 35px;
+            font-size: 15px;
+          }
+        }
+
+        // &::before {
+        //   content: '×';
+        //   font-size: 44px;
+        //   top: -58px;
+        //   position: absolute;
+        //   right: -66px;
+        //   color: #fff;
+        //   font-weight: 100;
+        //   cursor: pointer;
+        // }
+      }
+    }
+  }
+  
+  &.warn-box {
+    > .ant-modal-content {
+      > .ant-modal-body {
+        > .ant-modal-confirm-body-wrapper {
+          > .ant-modal-confirm-btns {
+            > button {
+              background: #fff;
+              color: #428dfa;
+              width: 120px;
+              height: 40px;
+              border-radius: 5px;
+              box-shadow: none;
+              text-shadow: none;
+              &:active {
+                background: #eee;
+              }
+              &:hover {
+                text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.145)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  &.with-null-msg {
+    > .ant-modal-content {
+      > .ant-modal-body {
+        > .ant-modal-confirm-body-wrapper {
+          > .ant-modal-confirm-body {
+            padding-top: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 全局loading样式设置
+.mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 80px;
+}
+.mask > span {
+  color: #fff;
+  font-size: 18px;
+  margin-left: 20px;
+  color: #1890ff;
+  font-size: 14px;
+  &:last-of-type {
+    margin-top: 6px;
+    letter-spacing: 1px;
+    position: relative;
+    left: 2px;
+  }
+}
+.mask.show{
+  display: flex;
+  animation: maskShow 0.6s;
+  z-index: 9999;
+}
+.mask > span .ant-spin .ant-spin-dot-item {
+  background-color: #1890ff !important;
+}
+@keyframes maskShow {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

@@ -21,6 +21,7 @@
             height: 60px;
             width: 137px;
             margin-right: 65px;
+            cursor: pointer;
           }
           display: flex;
           align-items: center;
@@ -50,7 +51,6 @@
                   height: 5px;
                   background-color: #428dfa;
                   opacity: 0;
-                  transition: 0.2s;
                 }
               }
               :global {
@@ -59,8 +59,28 @@
                   position: relative;
                   &::after {
                     opacity: 1;
+                    transition: 0.3s;
                   }
                 }
+              }
+            }
+          }
+
+          &.user {
+            > a {
+              height: 45px;
+              line-height: 45px;
+              margin: 10px 0;
+              color: #eee;
+              font-size: 14px;
+              padding: 0 10px;
+              border-radius: 2px;
+              transition: 0.2s;
+            }
+            :global {
+              .ant-dropdown-open {
+                color: #bbb;
+                // background-color: rgb(55,55,55);
               }
             }
           }
@@ -68,7 +88,7 @@
       }
     }
   }
-  > div:last-of-type {
-  }
+  // > div:last-of-type {
+  // }
 
 }

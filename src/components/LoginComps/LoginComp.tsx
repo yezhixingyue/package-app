@@ -1,7 +1,7 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import styles from './LoginStyle.less';
 import React, { useState } from 'react';
-import validateCheck from '../../assets/js/validator/validateCheck.js';
+import validateCheck from '../../assets/js/validator/validateCheck';
 import { Base64 } from 'js-base64';
 import { history } from 'umi';
 
@@ -25,22 +25,24 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
       password: pwd,
     }
     const res = await props.onLogin(_tempObj);
-    if (!res) {
+    console.log(res);
+    if (!res && res !== undefined) {
       form.setFieldsValue({ password: '' });
-      if (values.remember) {
-        localStorage.removeItem('initialValues');
-      }
+      // if (values.remember) {
+      //   localStorage.removeItem('initialValues');
+      // }
       return;
     }
 
-    history.push('/');
-
-    // 下面步骤需要在登录成功后执行
-    if (values.remember) {
-      localStorage.setItem('initialValues', JSON.stringify(values));
-    } else if (_info) {
-      localStorage.removeItem('initialValues');
+    if (res) { // 登录成功
+      history.push('/labelprint');
+      if (values.remember) {
+        localStorage.setItem('initialValues', JSON.stringify(values));
+      } else if (_info) {
+        localStorage.removeItem('initialValues');
+      }
     }
+    
   };
 
   const validateMobile = (rule: any, value: string, callback: (arg0?: string | undefined) => void) => {

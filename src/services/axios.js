@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { history } from 'umi';
+import model from '../assets/js/utils/model';
+import { message } from 'antd';
 // import { Loading, Message } from 'element-ui';
 // import router from '@/router';
 // import messageBox from '../assets/js/utils/message';
@@ -40,8 +42,8 @@ axios.interceptors.request.use(
   },
   (error) => {
     if (loadingInstance) loadingInstance.close();
-    // messageBox.failSingleError({ msg: error });
-    alert(error);
+    model.showWarn({ msg: error });
+    // alert(error);
     return Promise.reject(error);
   },
 );
@@ -58,24 +60,19 @@ axios.interceptors.response.use(
     const _url = response.config.url.split('?')[0];
 
     if ([7025, 8037].includes(response.data.Status)) {
-      // Message({
-      //   showClose: true,
-      //   message: `${response.data.Message}`,
-      //   type: 'error',
-      // });
-      alert(response.data.Message);
-      history.push('/login');
+      message.error(response.data.Message);
+      history.replace('/login');
       sessionStorage.removeItem('loginAuth');
       return response;
     } if ((!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(_url) && (!closeTip)) || [7025, 8037].includes(response.data.Status)) {
       const _obj = { msg: `[ ${response.data.Message} ]` };
       if ([7025, 8037].includes(response.data.Status)) {
-        _obj.successFunc = () => {
-          history.push('/login');
+        _obj.onOk = () => {
+          history.replace('/login');
           sessionStorage.removeItem('loginAuth');
         };
       } else {
-        _obj.successFunc = undefined;
+        _obj.onOk = undefined;
       }
       let _msg = '错误';
       if (_url === '/Api/Customer/Login') _msg = '登录失败';
@@ -91,13 +88,12 @@ axios.interceptors.response.use(
       if (_url === '/Api/Upload/File') _msg = '文件上传失败';
 
       _obj.title = _msg;
-      // messageBox.failSingleError(_obj);
-      alert(_msg);
+      model.showWarn(_obj);
+      // alert(_msg);
     }
     return response;
   },
   async (error) => {
-    console.log(error, 'response-error');
     if (loadingInstance) loadingInstance.close();
     if (error.response) {
       let key = false;
@@ -107,7 +103,7 @@ axios.interceptors.response.use(
       let buffterErr = '文件导出数据过大，请缩小导出时间区间或精确筛选条件';
       switch (error.response.status) {
         case 401:
-          history.push('/login');
+          history.replace('/login');
           sessionStorage.removeItem('loginAuth');
           key = true;
           break;
@@ -119,13 +115,13 @@ axios.interceptors.response.use(
           if (buffterRes && buffterRes.currentTarget && buffterRes.currentTarget.result) {
             buffterErr = buffterRes.currentTarget.result;
           }
-          // messageBox.failSingleError({ msg: `[ 错误 413：${buffterErr} ]` });
-          alert(`错误 413：${buffterErr}`);
+          model.showWarn({ msg: `[ 错误 413：${buffterErr} ]` });
+          // alert(`错误 413：${buffterErr}`);
           key = true;
           break;
         default:
-          // messageBox.failSingleError({ msg: `[ 错误代码${error.response.status}：${error.response.statusText}]` });
-          alert(`[ 错误代码${error.response.status}：${error.response.statusText}]`);
+          model.showWarn({ msg: `[ 错误代码${error.response.status}：${error.response.statusText}]` });
+          // alert(`[ 错误代码${error.response.status}：${error.response.statusText}]`);
           key = true;
           break;
       }
@@ -137,21 +133,21 @@ axios.interceptors.response.use(
       //   message: '网络错误',
       //   type: 'error',
       // });
-      alert('网络错误');
+      message.error('网络错误');
     } else if (error.message.includes('timeout')) {
       // Message({
       //   showClose: true,
       //   message: '网络超时',
       //   type: 'error',
       // });
-      alert('网络超时');
+      message.error('网络超时');
     } else if (error.response && error.response.status === 404) {
       // Message({
       //   showClose: true,
       //   message: '404错误',
       //   type: 'error',
       // });
-      alert('404');
+      message.error('404');
     } else {
       let msg = '未知错误';
       if (error.response && error.response.data && error.response.data.Message) {
@@ -163,7 +159,7 @@ axios.interceptors.response.use(
       //   message: msg,
       //   type: 'error',
       // });
-      alert(msg);
+      message.error(msg);
     }
     return Promise.reject(error);
   },

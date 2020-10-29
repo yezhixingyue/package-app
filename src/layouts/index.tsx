@@ -1,52 +1,45 @@
 import React from 'react'
 import styles from './index.less';
-import { NavLink } from 'umi';
-import { Menu, Dropdown, Affix } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { NavLink, history } from 'umi';
+import { Affix } from 'antd';
+import RightDropDown from '../components/container/LayoutContainers/RightDropDownContainer';
+import MaskContainer from '@/components/container/MaskContainer';
 
 
 
 
 export default function header(props: { location: { pathname: string; }; children: any; }) {
-  if (props.location.pathname === '/login') return <>{props.children}</>
+  if (props.location.pathname === '/login') return <>{props.children} <MaskContainer>登录中...</MaskContainer></>
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="http://www.alipay.com/">1st menu item</a>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <a href="http://www.taobao.com/">2nd menu item</a>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="3">3rd menu item</Menu.Item>
-    </Menu>
-  );
+  const onLogoClick = () => {
+    history.push('/labelprint');
+  }
 
   return (
     <section className={styles['layout-page']}>
       <Affix offsetTop={0.1} className={styles.header}>
         <div>
           <div>
-            <div className={styles.logo}></div>
+            <div onClick={onLogoClick} className={styles.logo}></div>
             <ul className="menu-list">
               <li>
-                <NavLink to="/">首页</NavLink>
+                <NavLink exact to="/labelprint">打印标签</NavLink>
               </li>
-              <li></li>
-              <li></li>
+              <li>
+                <NavLink exact to="/submitware">提交入库</NavLink>
+              </li>
+              <li>
+                <NavLink exact to="/operatelog">操作记录</NavLink>
+              </li>
             </ul>
           </div>
-          <div className="user">
-          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
-            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-              Click me <DownOutlined />
-            </a>
-          </Dropdown>,
+          <div className={styles.user}>
+            <RightDropDown />
           </div>
         </div>
       </Affix>
       <div>{props.children}</div>
+      <MaskContainer />
     </section>
   )
 }

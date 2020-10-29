@@ -5,8 +5,7 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: object; })
   return {
     async onLogin(payload: object) {
       const res = await dispatch({ type: 'loginInfo/login', payload });
-      if (res) return true;
-      return false;
+      return res;
     }
   }
 }
