@@ -1,0 +1,82 @@
+.print-model-title {
+  color: #888;
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  > li {
+    height: 40px;
+    line-height: 34px;
+    font-size: 16px;
+    &:first-of-type {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: flex;
+      > span{
+        text-align: left;
+        &:first-of-type {
+          margin-right: 25px;
+        }
+        &:last-of-type {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+    &:last-of-type {
+      flex-shrink: 0;
+      width: 290px;
+      margin-left: 15px;
+      padding-left: 15px;
+      box-sizing: border-box;
+      border-left: 1px solid #eee;
+      white-space: nowrap;
+      overflow: hidden;
+      > span {
+        display: inline-block;
+        max-width: 108px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        &:last-of-type {
+          max-width: unset;
+        }
+      }
+    }
+  }
+}
+.print-model-wrap {
+  color: red;
+  :global {
+    .ant-modal {
+      .ant-modal-content {
+        height: 550px;
+        border-radius: 5px;
+        > .ant-modal-header {
+          border-radius: 5px 5px 0 0;
+          padding: 38px 20px 15px;
+        }
+        > .ant-modal-close {
+          right: -48px;
+          top: -6px;
+          > span {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 3px;
+            &:active {
+              background-color: #aaa;
+            }
+            > i {
+              font-size: 18px;
+              color: #fff;
+              font-weight: 400;
+            }
+          }
+        }
+      }
+    }
+    
+  }
+}

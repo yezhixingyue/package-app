@@ -3,20 +3,24 @@ import { history } from 'umi';
 import delay from '../assets/js/utils/delay'
 const { getLogin } = api;
 
+
 export default {
   state: {
-    // loginAuth: '',
+    userDetailInfo: null,
   },
-  reducer: {
-    // setLoginAuth(state, { payload }) {
-    //   return {
-    //     ...state,
-    //     loginAuth: payload,
-    //   };
-    // }
+  reducers: {
+    setUserDetailInfo(state, { payload }) {
+      return {
+        ...state,
+        userDetailInfo: payload,
+      }
+    }
   },
   effects: {
     *login({ payload }, { call, put }) {
+      sessionStorage.removeItem('loginAuth');
+      sessionStorage.removeItem('userDetailInfo');
+      yield put({ type: 'setUserDetailInfo', payload: null });
       const { username, password } = payload;
       let resp;
       try {
@@ -36,14 +40,30 @@ export default {
     },
     *loginout({ payload }, { call }) {
       sessionStorage.removeItem('loginAuth');
+      sessionStorage.removeItem('userDetailInfo');
       yield call(delay, 30);
       history.push('/login');
+    },
+    *getUserInfo({ payload }, { call, put, select }) {
+      const userDetailInfo = yield select(state =>  state.loginInfo.userDetailInfo);
+      if (userDetailInfo) return;
+      let res;
+      try {
+        res = yield call(api.getStaffDetail)
+      } catch (error) {
+        return;
+      }
+      if (res.data.Status === 1000) {
+        sessionStorage.setItem('userDetailInfo', JSON.stringify(res.data.Data));
+        yield put({ type: 'setUserDetailInfo', payload: res.data.Data });
+      }
+      return false;
     }
   },
   subscriptions: {
-    // getLoginAuthFromSesstionStorage({ dispatch }) {
-    //   const _auth = sessionStorage.getItem('loginAuth');
-    //   if (_auth) dispatch({ type: 'setLoginAuth', payload: _auth });
-    // }
+    getUserDetailInfoFromSesstionStorage({ dispatch }) {
+      const userDetailInfo = sessionStorage.getItem('userDetailInfo');
+      if (userDetailInfo) dispatch({ type: 'setUserDetailInfo', payload: JSON.parse(userDetailInfo) });
+    }
   }
 }

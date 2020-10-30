@@ -16,11 +16,11 @@ export function showConfirm({title = '注意', msg = '', onOk = () => {}, onCanc
     cancelText: '取消',
     maskClosable: true,
     onOk() {
-      console.log('OK');
+      // console.log('OK');
       if (onOk) onOk();
     },
     onCancel() {
-      console.log('Cancel');
+      // console.log('Cancel');
       if (onCancel) onCancel();
     },
   });
@@ -35,11 +35,11 @@ export function showConfirmWithoutMsg({title = '注意', onOk = () => {}, onCanc
     cancelText: '取消',
     maskClosable: true,
     onOk() {
-      console.log('OK');
+      // console.log('OK');
       if (onOk) onOk();
     },
     onCancel() {
-      console.log('Cancel');
+      // console.log('Cancel');
       if (onCancel) onCancel();
     },
   });
@@ -54,11 +54,9 @@ export function showWarn({title = '错误', msg = '',onOk = () => {}, onCancel =
     content: msg,
     maskClosable: true,
     onOk() {
-      console.log('OK');
       if (onOk) onOk();
     },
     onCancel() {
-      console.log('Cancel');
       if (onCancel) onCancel();
     },
   });
@@ -72,11 +70,11 @@ export function showWarnWithoutMsg({title = '错误', onOk = () => {}, onCancel 
     okText: '关闭',
     maskClosable: true,
     onOk() {
-      console.log('OK');
+      // console.log('OK');
       if (onOk) onOk();
     },
     onCancel() {
-      console.log('Cancel');
+      // console.log('Cancel');
       if (onCancel) onCancel();
     },
   });

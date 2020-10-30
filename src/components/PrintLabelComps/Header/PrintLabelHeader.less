@@ -1,0 +1,47 @@
+.print-page-header {
+  height: 100px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 22.5px 0;
+  display: flex;
+  > li {
+    height: 55px;
+    > input {
+      height: 55px;
+      width: 290px;
+      border-radius: 4px;
+      font-size: 18px;
+      margin-right: 10px;
+      color: #24292e;
+      &::placeholder {
+        color: #888;
+      }
+    }
+    > button {
+      height: 55px;
+      text-align: top;
+      width: 180px;
+      font-size: 18px;
+      border-radius: 4px;
+    }
+    & + li {
+      margin-left: 130px;
+      > input {
+        width: 320px;
+      }
+      > button {
+        > i {
+          display: inline-block;
+          background: url(../../../assets/images/search.png) no-repeat center center/20px 20px ;
+          width: 28px;
+          height: 28px;
+          padding: 4px;
+          vertical-align: top;
+          margin-right: 10px;
+        }
+        color: #428dfa;
+        border-color: #428dfa;
+      }
+    }
+  }
+}

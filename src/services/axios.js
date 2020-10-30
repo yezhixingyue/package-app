@@ -2,9 +2,6 @@ import axios from 'axios';
 import { history } from 'umi';
 import model from '../assets/js/utils/model';
 import { message } from 'antd';
-// import { Loading, Message } from 'element-ui';
-// import router from '@/router';
-// import messageBox from '../assets/js/utils/message';
 
 let loadingInstance;
 let closeTip = false;
@@ -18,10 +15,10 @@ axios.interceptors.request.use(
     const url = curConfig.url.split('?')[0];
     const arrWithOutToken = ['/Api/Customer/Reg', '/Api/Customer/Login'];
     if (loginAuth && !arrWithOutToken.includes(url)) {
-      console.log(loginAuth, 'loginAuthloginAuthloginAuth');
+      // console.log(loginAuth, 'loginAuthloginAuthloginAuth');
       curConfig.headers.common.Authorization = `Bearer ${loginAuth}`;
     }
-    console.log(loginAuth, 'loginAuthloginAuthloginAuth');
+    // console.log(loginAuth, 'loginAuthloginAuthloginAuth');
     let key = true;
     const arr = ['/Api/Order/Create', '/Api/PaymentOrder/PayResult', '/Api/Upload/File']; // 不需要展示loading的api地址
     for (let i = 0; i < arr.length; i += 1) {
@@ -50,10 +47,8 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
-    console.log(response, 'response');
     if (loadingInstance) loadingInstance.close();
-    // eslint-disable-next-line max-len
-    const _list2NotNeed2Toast = ['/Api/Calculate/ProductPrice', '/Api/Order/Create', '/Api/AfterSales/Excel', '/Api/Customer/OrderExcel'];
+    const _list2NotNeed2Toast = [];
     const _statusList2NotNeed2Toast = [1000, 9062, 9169];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
@@ -75,17 +70,9 @@ axios.interceptors.response.use(
         _obj.onOk = undefined;
       }
       let _msg = '错误';
-      if (_url === '/Api/Customer/Login') _msg = '登录失败';
-      if (_url === '/Api/Customer/Reg') _msg = '注册失败';
-      if (_url === '/Api/Sms/Send/VerificationCode') _msg = '验证失败';
-      if (_url === '/Api/FindPassword/ResetPassword') _msg = '重置密码失败';
-      if (_url === '/Api/Customer/ChangePassword') _msg = '密码修改失败';
-      if (_url === '/Api/Coupon/Activate') _msg = '激活失败';
-      if (_url === '/Api/Order/Create' || _url === '/Api/Order/PreCreate') _msg = '下单失败';
-      if (_url === '/Api/FindPassword/CheckCode') _msg = '验证码错误';
-      if (_url === '/Api/Coupon/Receive') _msg = '领取失败';
-      if (_url === '/Api/Quotation/Save') _msg = '添加失败';
-      if (_url === '/Api/Upload/File') _msg = '文件上传失败';
+      if (_url === '/Api/Staff/Login') _msg = '登录失败';
+      if (_url === '/Api/Staff/Detail') _msg = '获取登录用户信息失败';
+      if (_url === '/Api/PrintPackage/OrderInfo') _msg = '打印标签失败';
 
       _obj.title = _msg;
       model.showWarn(_obj);

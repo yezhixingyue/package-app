@@ -133,7 +133,7 @@ table {
   font-weight: 700;
 }
 .is-black {
-  color: #333333;
+  color: #24292e;
 }
 
 
@@ -289,5 +289,29 @@ table {
   }
   100% {
     opacity: 1;
+  }
+}
+
+
+// 通用页面布局样式设置
+.page-wrap {
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  > header {
+    width: 100%;
+    background-color: #fff;
+    margin-bottom: 25px;
+    > .page-header-content {
+      width: 1200px;
+      margin: 0 auto;
+    }
+  }
+  > div.page-content-wrap {
+    width: 100%;
+    background-color: #fff;
+    > .page-content {
+      width: 1200px;
+      margin: 0 auto;
+    }
   }
 }

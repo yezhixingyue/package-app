@@ -1,10 +1,22 @@
-import React from 'react'
+import React from 'react';
+import PrintHeaderContainer from '../../components/PrintLabelComps/container/PrintHeaderContainer';
+import PrintModelContainer from '@/components/PrintLabelComps/container/PrintModelContainer';
 
 function index() {
   return (
-    <div>
-      打印标签页面
-    </div>
+    <section className='page-wrap'>
+      <header>
+        <div className='page-header-content'>
+          <PrintHeaderContainer />
+        </div>
+      </header>
+      <div className="page-content-wrap">
+        <div className="page-content">
+          page-content
+        </div>
+      </div>
+      <PrintModelContainer />
+    </section>
   )
 }
 
