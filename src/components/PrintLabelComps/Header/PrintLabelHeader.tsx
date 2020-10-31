@@ -22,12 +22,13 @@ export default function PrintLabelHeader(props: IProps) {
 
   const handleLabelPrint = () => {
     if (!inpOrderID) return;
-    if (inpOrderID.length !== 9) {
-      message.error('订单号输入长度不正确, 长度应为9位!');
+    if (inpOrderID.length < 9) {
+      message.error('订单号输入长度最少为9位!');
       return;
     }
     console.log(inpOrderID);
     props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(inpOrderID);
+    setInpOrderID('');
   }
 
   const handleOrderSearch = () => {

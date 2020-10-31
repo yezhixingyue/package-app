@@ -10,7 +10,12 @@ export default {
   },
   reducers: {
     setCurPrintInfo(state, { payload }) {
-      console.log(payload);
+      return {
+        ...state,
+        ...payload,
+      }
+    },
+    setModelState(state, payload) {
       return {
         ...state,
         ...payload,

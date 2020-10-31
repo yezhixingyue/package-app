@@ -19,6 +19,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: string | o
         if (res.UnPrintKindCount === 0) { // 剩余未打印款数为0时，更改仓库状态，使其进行弹窗显示
           dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: res, curPrintDiaOnState: true } })
         }
+        else {
+          dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: res, curPrintDiaOnState: true } })
+        }
       }
     }
   }
