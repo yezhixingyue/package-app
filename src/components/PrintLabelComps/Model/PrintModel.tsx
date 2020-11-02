@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal, Button } from 'antd';
 import model from '@/assets/js/utils/model';
 import styles from './PrintModel.less';
+import CommonNumInp from '../../Common/CommonNumInp/CommonNumInp';
 
 interface packageItem {
   IncludeKindCount: number,
@@ -41,9 +42,25 @@ export default class PrintModel extends React.Component<IProps> {
   
   title: {} | null | undefined;
   contentHeader: {} | null | undefined;
+  timer: NodeJS.Timeout | null = null;
+
+  state = {
+    isUserSettingKind: false,
+    userSettingNum: '',
+  }
+
+  handleUserSettingNum = (val: string) => {
+    this.setState({
+      ...this.state,
+      userSettingNum: val.replace('.', ''),
+    });
+  }
 
   handleCancel = () => {
     this.props.closeModelAndInfo();
+    this.setState({
+      isUserSettingKind: false,
+    })
   }
 
   getPrintPackage = () => { // 处理当剩余未打印款数为0时的打印处理
@@ -89,10 +106,16 @@ export default class PrintModel extends React.Component<IProps> {
 
   handleNoneOfTheAbove = () => {
     console.log('handleNoneOfTheAbove');
+    if (this.timer) return;
+    console.log(this.timer);
     this.props.setModelState(false);
-    // setTimeout(() => {
-    //   this.props.setModelState(true);
-    // }, 200)
+    this.timer = setTimeout(() => {
+      this.props.setModelState(true);
+      this.timer = null;
+      this.setState({
+        isUserSettingKind: true,
+      })
+    }, 300)
   }
 
   componentDidUpdate() {
@@ -148,7 +171,8 @@ export default class PrintModel extends React.Component<IProps> {
         closeIcon={<i className='iconfont icon-cha'></i>}
         footer={null}
         destroyOnClose
-        width={this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 ? 1200 : 1000}
+        maskClosable={false}
+        width={this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 && !this.state.isUserSettingKind ? 1200 : 1000}
         wrapClassName={styles['print-model-wrap']}
       >
         { // 已有打印信息  且已打印包数 大于等于 总款数 （即 每款都有包裹记录  单款 或 多款） || 合包再分包的处理还没考虑（已处理 会报错提示）
@@ -173,7 +197,7 @@ export default class PrintModel extends React.Component<IProps> {
             : null
         }
         {
-          this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 ? <>
+          this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 && !this.state.isUserSettingKind ? <>
             <ul className={styles['greater-than-1-count-wrap']}>
               <li>{this.contentHeader}</li>
               <li className={styles['greater-than-1-count-wrap-second-li']}>
@@ -184,8 +208,27 @@ export default class PrintModel extends React.Component<IProps> {
                   此包装 {this.props.curPrintDiaInfo.UnPrintKindCount} 款
                 </Button>
               </li>
-              <li>
-                <Button onClick={this.handleNoneOfTheAbove}>以上都不是</Button>
+              <li >
+                {
+                  this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 2 ?  <Button onClick={this.handleNoneOfTheAbove}>以上都不是</Button> : null
+                }
+              </li>
+            </ul>
+          </> : null
+        }
+        {
+          this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 && this.state.isUserSettingKind ? <>
+            <ul className={styles['greater-than-1-count-wrap']}>
+              <li>{this.contentHeader}</li>
+              <li className={styles['greater-than-1-count-wrap-second-li']}>
+                <span>当前包裹含</span>
+                <CommonNumInp value={this.state.userSettingNum} onChange={this.handleUserSettingNum} />
+                <span>款</span>
+              </li>
+              <li >
+                {
+                  this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 2 ?  <Button onClick={this.handleNoneOfTheAbove}>以上都不是</Button> : null
+                }
               </li>
             </ul>
           </> : null

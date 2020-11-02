@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch: (arg0: any) => any) => {
       console.log(printRes); // 打印
     },
     setModelState(curPrintDiaOnState: boolean) {
+      console.log('setModelState', curPrintDiaOnState);
       dispatch({ type: 'packageStore/setModelState', payload: { curPrintDiaOnState } });
     }
   }

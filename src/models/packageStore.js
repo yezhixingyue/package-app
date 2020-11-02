@@ -15,7 +15,8 @@ export default {
         ...payload,
       }
     },
-    setModelState(state, payload) {
+    setModelState(state, { payload }) {
+      console.log(payload);
       return {
         ...state,
         ...payload,

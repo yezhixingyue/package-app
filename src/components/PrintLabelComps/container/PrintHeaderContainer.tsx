@@ -15,11 +15,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: string | o
           }
           const printRes = await dispatch({ type: 'packageStore/getPrintPackage', payload })
           console.log(printRes); // 打印
-        } 
-        if (res.UnPrintKindCount === 0) { // 剩余未打印款数为0时，更改仓库状态，使其进行弹窗显示
+        } else  if (res.UnPrintKindCount === 0) { // 剩余未打印款数为0时，更改仓库状态，使其进行弹窗显示
           dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: res, curPrintDiaOnState: true } })
-        }
-        else {
+        } else {
           dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: res, curPrintDiaOnState: true } })
         }
       }
