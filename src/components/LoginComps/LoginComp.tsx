@@ -13,7 +13,7 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
   let loginInfo = {
     username: '',
     password: '',
-    remember: true,
+    remember: false,
   }
   if (_info) loginInfo = JSON.parse(_info);
   
@@ -109,7 +109,7 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
 
       <Form.Item>
         <Form.Item name="remember" valuePropName="checked" noStyle>
-          <Checkbox className='is-gray-light'>自动登录</Checkbox>
+          <Checkbox className='is-gray-light'>记住密码</Checkbox>
         </Form.Item>
       </Form.Item>
 

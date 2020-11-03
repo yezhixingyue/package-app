@@ -12,7 +12,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: string | o
           const payload = {
             OrderID: orderId,
             IncludeKindCount: 1,
+            curOrderData: res,
           }
+          // await dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: res, curPrintDiaOnState: false } })
           const printRes = await dispatch({ type: 'packageStore/getPrintPackage', payload })
           console.log(printRes); // 打印
         } else  if (res.UnPrintKindCount === 0) { // 剩余未打印款数为0时，更改仓库状态，使其进行弹窗显示

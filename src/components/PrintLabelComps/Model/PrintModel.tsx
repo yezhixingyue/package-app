@@ -28,12 +28,13 @@ export interface printInfo {
 export interface printInfoType {
   OrderID: number,
   IncludeKindCount: number,
+  curOrderData: object,
 }
 
 interface IProps {
   curPrintDiaInfo: printInfo | null,
   curPrintDiaOnState: boolean,
-  closeModelAndInfo: () => void,
+  closeModelAndInfo: (arg0: undefined | boolean) => void,
   getPrintPackage: (arg0: printInfoType) => any,
   setModelState: (arg0: boolean) => void,
 }
@@ -50,15 +51,28 @@ export default class PrintModel extends React.Component<IProps> {
   }
 
   handleUserSettingNum = (val: string) => {
+    let _val = val.replace('.', '').slice(0, 3);
+    // console.log(this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount);
+    if (this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount < +_val) {
+      _val = `${this.props.curPrintDiaInfo.UnPrintKindCount}`;
+    }
     this.setState({
       ...this.state,
-      userSettingNum: val.replace('.', ''),
+      userSettingNum: _val,
     });
   }
+  handleUserDefineSubmit = () => {
+    if (!this.props.curPrintDiaInfo || !this.state.userSettingNum) return;
+    if (+this.state.userSettingNum > 0 && +this.state.userSettingNum <= this.props.curPrintDiaInfo.UnPrintKindCount) {
+      // console.log('handleUserDefineSubmit', this.state.userSettingNum);
+      this.getPrintPackageByKingCount(+this.state.userSettingNum);
+    }
+  }
 
-  handleCancel = () => {
-    this.props.closeModelAndInfo();
+  handleCancel = (key: undefined | boolean = undefined) => {
+    this.props.closeModelAndInfo(key);
     this.setState({
+      ...this.state,
       isUserSettingKind: false,
     })
   }
@@ -68,10 +82,11 @@ export default class PrintModel extends React.Component<IProps> {
       const payload: printInfoType = {
         OrderID: this.props.curPrintDiaInfo.OrderID,
         IncludeKindCount: 1,
+        curOrderData: this.props.curPrintDiaInfo,
       }
       if (this.props.curPrintDiaInfo.KindCount === 1) {
         this.props.getPrintPackage(payload);
-        this.handleCancel();
+        this.handleCancel(true);
       } else {
         let key = true;
         this.props.curPrintDiaInfo.PackageList.forEach(it => {
@@ -83,12 +98,15 @@ export default class PrintModel extends React.Component<IProps> {
             title: '该订单存在合包，不允许再拆包!',
             onOk: () => {
               this.handleCancel();
-            }
+            },
+            onCancel: () => {
+              this.handleCancel();
+            },
           });
           return;
         }
         this.props.getPrintPackage(payload);
-        this.handleCancel();
+        this.handleCancel(true);
       }
     }
   }
@@ -98,14 +116,19 @@ export default class PrintModel extends React.Component<IProps> {
       const payload: printInfoType = {
         OrderID: this.props.curPrintDiaInfo.OrderID,
         IncludeKindCount: count,
+        curOrderData: this.props.curPrintDiaInfo,
       }
       this.props.getPrintPackage(payload);
-      this.handleCancel();
+      this.handleCancel(true);
+      this.setState({
+        ...this.state,
+        userSettingNum: '',
+        isUserSettingKind: false,
+      })
     }
   }
 
   handleNoneOfTheAbove = () => {
-    console.log('handleNoneOfTheAbove');
     if (this.timer) return;
     console.log(this.timer);
     this.props.setModelState(false);
@@ -113,9 +136,22 @@ export default class PrintModel extends React.Component<IProps> {
       this.props.setModelState(true);
       this.timer = null;
       this.setState({
+        ...this.state,
         isUserSettingKind: true,
       })
-    }, 300)
+    }, 240)
+  }
+
+  handleReturn = () => {
+    this.props.setModelState(false);
+    setTimeout(() => {
+      this.props.setModelState(true);
+      this.timer = null;
+      this.setState({
+        ...this.state,
+        isUserSettingKind: false,
+      })
+    }, 240)
   }
 
   componentDidUpdate() {
@@ -128,9 +164,6 @@ export default class PrintModel extends React.Component<IProps> {
       if (!key) {
         model.showWarn({
           title: '该订单存在合包，不允许再拆包!',
-          onOk: () => {
-            this.handleCancel();
-          }
         });
         this.handleCancel();
       }
@@ -157,8 +190,9 @@ export default class PrintModel extends React.Component<IProps> {
       <span style={{ marginRight: '15px' }} className='is-font-28 is-black is-bold'>{this.props.curPrintDiaInfo.OrderID}</span>
       <span className='is-font-16'>共 <i className='is-font-26 is-pink is-bold'>{this.props.curPrintDiaInfo.KindCount}</i> 款</span>
       <span className='is-font-18'>
-        （ {this.props.curPrintDiaInfo.ProductAmount + this.props.curPrintDiaInfo.Unit}/款 ），已打印
-        {this.props.curPrintDiaInfo.PackageList.length}个包裹（ 共{+(this.props.curPrintDiaInfo.KindCount - this.props.curPrintDiaInfo.UnPrintKindCount).toFixed(0)}款 ）
+        （ {this.props.curPrintDiaInfo.ProductAmount + this.props.curPrintDiaInfo.Unit}/款 ），
+        已打印 <i className='is-font-26 is-pink is-bold'>{this.props.curPrintDiaInfo.PackageList.length}</i> 个包裹
+        （ 共包含 <i className='is-bold'>{+(this.props.curPrintDiaInfo.KindCount - this.props.curPrintDiaInfo.UnPrintKindCount).toFixed(0)}</i> 款 ）
       </span>
     </div>
     : null)
@@ -218,17 +252,24 @@ export default class PrintModel extends React.Component<IProps> {
         }
         {
           this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 && this.state.isUserSettingKind ? <>
-            <ul className={styles['greater-than-1-count-wrap']}>
+            <ul className={styles['input-num-box']}>
               <li>{this.contentHeader}</li>
-              <li className={styles['greater-than-1-count-wrap-second-li']}>
+              <li>
                 <span>当前包裹含</span>
-                <CommonNumInp value={this.state.userSettingNum} onChange={this.handleUserSettingNum} />
-                <span>款</span>
+                <CommonNumInp
+                  value={this.state.userSettingNum}
+                  onChange={this.handleUserSettingNum} placeholder={'请输入款数: [ 1 - ' + this.props.curPrintDiaInfo.UnPrintKindCount + ' ]款'}
+                  onPressEnter={this.handleUserDefineSubmit}
+                 />
+                <span className='gray'>款</span>
               </li>
               <li >
-                {
-                  this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 2 ?  <Button onClick={this.handleNoneOfTheAbove}>以上都不是</Button> : null
-                }
+                <Button onClick={this.handleReturn}>＜＜ 返回</Button>
+                <Button type='primary'
+                  disabled={this.state.userSettingNum ? +this.state.userSettingNum < 1 : true}
+                  onClick={this.handleUserDefineSubmit}>
+                  打印
+                </Button>
               </li>
             </ul>
           </> : null

@@ -13,14 +13,20 @@ const mapStateToProps = (state: { packageStore: { curPrintDiaInfo: printInfo; cu
 
 const mapDispatchToProps = (dispatch: (arg0: any) => any) => {
   return {
-    closeModelAndInfo() {
-      dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
+    closeModelAndInfo(key = undefined) {
+      if (key) {
+        dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
+      } else {
+        dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
+      }
     },
-    async getPrintPackage({ OrderID, IncludeKindCount }:printInfoType) {
+    async getPrintPackage({ OrderID, IncludeKindCount, curOrderData }:printInfoType) {
       const payload = {
         OrderID,
         IncludeKindCount,
+        curOrderData,
       }
+      console.log(curOrderData, 'curOrderData');
       const printRes = await dispatch({ type: 'packageStore/getPrintPackage', payload })
       console.log(printRes); // 打印
     },
