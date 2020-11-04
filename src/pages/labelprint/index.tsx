@@ -1,6 +1,7 @@
 import React from 'react';
 import PrintHeaderContainer from '../../components/PrintLabelComps/container/PrintHeaderContainer';
 import PrintModelContainer from '@/components/PrintLabelComps/container/PrintModelContainer';
+import PrintContentContainer from '@/components/PrintLabelComps/container/PrintContentContainer';
 
 function index() {
   return (
@@ -12,7 +13,7 @@ function index() {
       </header>
       <div className="page-content-wrap">
         <div className="page-content">
-          page-content
+          <PrintContentContainer />
         </div>
       </div>
       <PrintModelContainer />

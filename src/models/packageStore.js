@@ -31,9 +31,16 @@ export default {
       curOrderData.UnPrintKindCount = curOrderData.UnPrintKindCount - packageData.IncludeKindCount;
       list.unshift(curOrderData);
       // 此处保存缓存
+      sessionStorage.setItem('printedList', JSON.stringify(list));
       return {
         ...state,
         hasPrintedPackageList: list,
+      }
+    },
+    reStoreDataFromStorage(state, { payload }) { // 从缓存中取数据还原 || 或者是对其进行直接赋值null等操作
+      return {
+        ...state,
+        hasPrintedPackageList: payload,
       }
     }
   },
@@ -67,6 +74,11 @@ export default {
     }
   },
   subscriptions: {
-
+    reStoreDataFromStorage({ dispatch }) {
+      const storagePrintedList = sessionStorage.getItem('printedList');
+      if (storagePrintedList) {
+        dispatch({ type: 'reStoreDataFromStorage', payload: JSON.parse(storagePrintedList) });
+      }
+    }
   }
 }

@@ -41,6 +41,7 @@ export default {
     *loginout({ payload }, { call }) {
       sessionStorage.removeItem('loginAuth');
       sessionStorage.removeItem('userDetailInfo');
+      sessionStorage.removeItem('printedList');
       yield call(delay, 30);
       history.push('/login');
     },
