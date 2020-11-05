@@ -133,7 +133,7 @@ table {
   font-weight: 700;
 }
 .is-black {
-  color: #24292e;
+  color: #24292e !important;
 }
 
 
@@ -163,6 +163,11 @@ table {
               height: 38px;
               width: 45px;
               background: url(./assets/images/warn.png) no-repeat center center/100% 100%;
+            }
+            &.success {
+              height: 30px;
+              width: 30px;
+              background: url(./assets/images/success.png) no-repeat center center/100% 100%;
             }
           }
           > .ant-modal-confirm-title {
@@ -294,9 +299,15 @@ table {
 
 
 // 通用页面布局样式设置
-.page-wrap {
+.page-common-style-wrap {
   width: 100%;
   background-color: rgb(245, 245, 245);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 60px;
+  overflow: auto;
   > header {
     width: 100%;
     background-color: #fff;
@@ -322,5 +333,25 @@ table {
   }
   &:active {
     background-color: #2670e0 !important;
+  }
+}
+
+.ant-modal-close {
+  right: -48px;
+  top: -6px;
+  > span {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 3px;
+    color: #fff;
+    &:active {
+      background-color: #aaa;
+    }
+    > i {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 400;
+    }
   }
 }

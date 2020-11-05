@@ -18,6 +18,15 @@ const api = {
   getPrintPackage(data) { // POST /Api/PrintPackage 打印包裹标签
     return instance.post('/Api/PrintPackage', data);
   },
+  ReprintPackage(packageID) { // PUT /Api/PrintPackage/Reprint  包裹重打
+    return instance.put(`/Api/PrintPackage/Reprint?packageID=${packageID}`);
+  },
+  getModifyKindChange({ packageID, includeKind }) { // PUT /Api/PrintPackage/ModifyKind 款数修改
+    return instance.put(`/Api/PrintPackage/ModifyKind?packageID=${packageID}&includeKind=${includeKind}`);
+  },
+  getPrintPackageCancle(packageID) { // DELETE /Api/PrintPackage/Cancle   包裹撤销
+    return instance.delete(`/Api/PrintPackage/Cancle?packageID=${packageID}`);
+  },
 };
 
 export default api;

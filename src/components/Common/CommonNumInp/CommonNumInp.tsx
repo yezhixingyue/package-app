@@ -23,6 +23,7 @@ interface IProps {
   onBlur?: () => void,
   placeholder?: string,
   onPressEnter?: () => void,
+  onFocus?: (e: { target: { select: () => any; }; }) => void,
 }
 
 export default class NumericInput extends React.Component<IProps, {}> {

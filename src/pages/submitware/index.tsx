@@ -5,7 +5,7 @@ class index extends Component {
   static wrappers: string[];
   render() {
     return (
-      <section className='page-wrap'>
+      <section className='page-common-style-wrap'>
         <header>
           <div className='page-header-content'>提交入库页面</div>
         </header>

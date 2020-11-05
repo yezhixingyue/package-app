@@ -13,12 +13,8 @@ const mapStateToProps = (state: { packageStore: { curPrintDiaInfo: printInfo; cu
 
 const mapDispatchToProps = (dispatch: (arg0: any) => any) => {
   return {
-    closeModelAndInfo(key = undefined) {
-      if (key) {
-        dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
-      } else {
-        dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
-      }
+    closeModelAndInfo() {
+      dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
     },
     async getPrintPackage({ OrderID, IncludeKindCount, curOrderData }:printInfoType) {
       const payload = {

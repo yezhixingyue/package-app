@@ -55,7 +55,7 @@ export default function header(props: { location: { pathname: string; }; childre
           </div>
         </div>
       </Affix>
-      <BackTop style={style} visibilityHeight={400} target={() => document.getElementsByTagName('body')[0]}>
+      <BackTop style={style} visibilityHeight={400} target={() => document.getElementsByClassName('page-common-style-wrap')[0]}>
         <ArrowUpOutlined />
       </BackTop>
       <div>{props.children}</div>

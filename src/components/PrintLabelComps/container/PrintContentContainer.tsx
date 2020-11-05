@@ -1,5 +1,5 @@
 import { connect } from 'umi';
-import PrintLabelContent from '../PageContent/PrintLabelContent';
+import PrintLabelContent from '../PageContent/PrintLabel/PrintLabelContent';
 
 interface PrintRecordsItemProps {
   PackageID: number,
@@ -7,12 +7,13 @@ interface PrintRecordsItemProps {
 }
 
 
-interface PackageItemProps {
+export interface PackageItemProps {
   PackageID: number,
   IncludeKindCount: number,
   PrintRecords: PrintRecordsItemProps[],
   LastPrintTime: string,
   OrderID: number,
+  Status: number,
 }
 
 export interface OrderItemProps {

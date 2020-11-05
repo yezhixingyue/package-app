@@ -5,7 +5,7 @@ import PrintContentContainer from '@/components/PrintLabelComps/container/PrintC
 
 function index() {
   return (
-    <section className='page-wrap'>
+    <section className='page-common-style-wrap'>
       <header>
         <div className='page-header-content'>
           <PrintHeaderContainer />

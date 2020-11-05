@@ -34,7 +34,7 @@ export interface printInfoType {
 interface IProps {
   curPrintDiaInfo: printInfo | null,
   curPrintDiaOnState: boolean,
-  closeModelAndInfo: (arg0: undefined | boolean) => void,
+  closeModelAndInfo: () => void,
   getPrintPackage: (arg0: printInfoType) => any,
   setModelState: (arg0: boolean) => void,
 }
@@ -69,8 +69,8 @@ export default class PrintModel extends React.Component<IProps> {
     }
   }
 
-  handleCancel = (key: undefined | boolean = undefined) => {
-    this.props.closeModelAndInfo(key);
+  handleCancel = () => {
+    this.props.closeModelAndInfo();
     this.setState({
       ...this.state,
       isUserSettingKind: false,
@@ -86,7 +86,7 @@ export default class PrintModel extends React.Component<IProps> {
       }
       if (this.props.curPrintDiaInfo.KindCount === 1) {
         this.props.getPrintPackage(payload);
-        this.handleCancel(true);
+        this.handleCancel();
       } else {
         let key = true;
         this.props.curPrintDiaInfo.PackageList.forEach(it => {
@@ -106,7 +106,7 @@ export default class PrintModel extends React.Component<IProps> {
           return;
         }
         this.props.getPrintPackage(payload);
-        this.handleCancel(true);
+        this.handleCancel();
       }
     }
   }
@@ -119,7 +119,7 @@ export default class PrintModel extends React.Component<IProps> {
         curOrderData: this.props.curPrintDiaInfo,
       }
       this.props.getPrintPackage(payload);
-      this.handleCancel(true);
+      this.handleCancel();
       this.setState({
         ...this.state,
         userSettingNum: '',

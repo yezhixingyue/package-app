@@ -2,7 +2,7 @@ import React from 'react'
 
 function index() {
   return (
-    <section className='page-wrap'>
+    <section className='page-common-style-wrap'>
       <header>
         <div className='page-header-content'>操作记录页面</div>
       </header>

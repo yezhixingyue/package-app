@@ -1,0 +1,248 @@
+.operation-model-wrap {
+  :global {
+    .ant-modal-header {
+      margin: 0 25px;
+      > .ant-modal-title {
+        > ul.text-model-title {
+          > li {
+            line-height: 32px;
+            height: 32px;
+            font-size: 15px;
+            position: relative;
+            color: #24292e;
+            &::before {
+              content: '';
+              position: absolute;
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              background-color: #f4a307;
+              left: -16px;
+              top: 13px;
+            }
+            &:first-of-type {
+              font-size: 16px;
+              font-weight: 700;
+              &::before {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+    .ant-modal-body {
+      .package-info-title {
+        text-align: center;
+        > li {
+          white-space: nowrap;
+          display: inline-block;
+          font-size: 16px;
+          color: #24292e;
+          height: 36px;
+          line-height: 38px;
+          > div {
+            display: inline-block;
+            height: 36px;
+            vertical-align: top;
+            line-height: 36px;
+          }
+          &:first-of-type {
+            margin-right: 25px;
+            > div:last-of-type {
+              font-size: 28px;
+              font-weight: 700;
+              line-height: 29px;
+            }
+          }
+          &:nth-of-type(2) {
+            > div:last-of-type {
+              > i {
+                font-size: 18px;
+                color: #ff3769;
+              }
+            }
+          }
+          &:last-of-type {
+            margin-left: 25px;
+            color: #888;
+          }
+        }
+      }
+      .first-opera-pannel {
+        text-align: center;
+        margin-top: 90px;
+        > li {
+          margin-bottom: 25px;
+          height: 50px;
+          &:first-of-type {
+            margin-bottom: 125px;
+            height: 75px;
+            > button {
+              width: 240px;
+              height: 75px;
+              border-radius: 5px;
+              font-size: 20px;
+            }
+            > span {
+              display: inline-block;
+              height: 75px;
+              line-height: 74px;
+              color: #428dfa;
+              font-size: 20px;
+              margin-right: 85px;
+              border-bottom: 1px solid rgba(0, 0, 0, 0);
+              transition: 0.25s;
+              user-select: none;
+              &:hover {
+                border-color: #428dfa;
+              }
+              &:active {
+                color: #f4a307;
+                border-color: #f4a307;
+              }
+            }
+          }
+          &:last-of-type {
+            > button {
+              width: 180px;
+              height: 50px;
+              font-size: 16px;
+              border-radius: 5px;
+              color: #428dfa;
+              border-color: #428dfa;
+              &:hover {
+                background-color: #ebf7ff;
+              }
+              &:active {
+                background-color: #b4daf3;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  &.hide-foot {
+    :global {
+      .ant-modal-footer {
+        display: none;
+      }
+    }
+  }
+}
+
+.print-model-title {
+  color: #888;
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: -4px;
+  > li {
+    height: 40px;
+    line-height: 34px;
+    font-size: 16px;
+    &:first-of-type {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: flex;
+      > span{
+        text-align: left;
+        &:first-of-type {
+          margin-right: 25px;
+        }
+        &:last-of-type {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+    &:last-of-type {
+      flex-shrink: 0;
+      width: 290px;
+      margin-left: 15px;
+      padding-left: 15px;
+      box-sizing: border-box;
+      border-left: 1px solid #eee;
+      white-space: nowrap;
+      overflow: hidden;
+      > span {
+        display: inline-block;
+        max-width: 108px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        &:last-of-type {
+          max-width: unset;
+        }
+      }
+    }
+  }
+}
+
+.input-num-box {
+  margin-bottom: 30px;
+  > li {
+    text-align: center;
+    &:first-of-type {
+      margin: 105px 0 120px;
+      > input {
+        width: 236px;
+        height: 60px;
+        border-radius: 4px;
+        margin: 0 20px;
+        font-size: 30px;
+        font-weight: 600;
+        text-align: center;
+        &::placeholder {
+          font-size: 20px;
+        }
+      }
+      > span {
+        font-size: 18px;
+      }
+    }
+    > button {
+      width: 240px;
+      height: 65px;
+      margin: 0 50px;
+      font-size: 22px;
+      border-radius: 4px;
+      &:last-of-type {
+        color: #428dfa;
+        border-color: #428dfa;
+        &:hover {
+          background-color: #ebf7ff;
+        }
+        &:active {
+          background-color: #b4daf3;
+        }
+      }
+    }
+    &.cancel-tip-box {
+      color: #ff3769;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 76px;
+      margin-bottom: 110px;
+      > div {
+        font-size: 28px;
+        // font-weight: 700;
+        padding-left: 75px;
+        background: url('../../../../assets/images/warn.png') no-repeat left top/ 45px 38px;
+        width: 336px;
+        text-align: left;
+        margin-bottom: 25px;
+        margin-left: 16px;
+      }
+      > p {
+        font-size: 18px;
+      }
+    }
+  }
+}
