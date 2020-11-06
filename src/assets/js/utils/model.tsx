@@ -66,12 +66,13 @@ export function showWarn({title = '错误', msg = '',onOk = () => {}, onCancel =
   });
 }
 
-export function showSuccess({title = '成功',onOk = () => {}, onCancel = () => {}}) {
+export function showSuccess({title = '成功', msg = '', onOk = () => {}, onCancel = () => {}}) {
   Modal.warn({
     title,
     icon: <>{iconSuccess}</>,
     className: 'mp-show-confirm-message-box with-null-msg warn-box',
     okText: '关闭',
+    content: msg,
     maskClosable: true,
     centered: true,
     onOk() {

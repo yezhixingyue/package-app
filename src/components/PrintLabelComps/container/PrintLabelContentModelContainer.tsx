@@ -9,8 +9,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: { packageI
       if (res) {
         callback()
         setTimeout(() => {
-          model.showSuccess({ title: '重新打印成功'})
+          model.showSuccess({ title: `重新打印成功`, msg: `包裹号：[ ${packageID} ]` })
         }, 150)
+        // model.showSuccess({ title: `重新打印成功`, msg: `包裹号：[ ${packageID} ]`, onOk: () => callback() })
       }
     },
     async getPrintPackageCancle(packageID: number, callback: () => void, orderID: number) {
@@ -18,8 +19,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: { packageI
       if (res) {
         callback()
         setTimeout(() => {
-          model.showSuccess({ title: '撤销成功'})
+          model.showSuccess({ title: `撤销成功`, msg: `包裹号：[ ${packageID} ]` })
         }, 150)
+        // model.showSuccess({ title: `撤销成功`, msg: `包裹号：[ ${packageID} ]`, onOk: () => callback() })
       }
     },
     async getModifyKindChange(packageID: number, includeKind: number, callback: () => void, orderID: number) {
@@ -27,8 +29,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: { packageI
       if (res) {
         callback()
         setTimeout(() => {
-          model.showSuccess({ title: '更改款数成功'})
+          model.showSuccess({ title: '款数更改成功', msg: `包裹号：[ ${packageID} ]，更改后款数为${includeKind}` })
         }, 150)
+        // model.showSuccess({ title: '款数更改成功', msg: `包裹号：[ ${packageID} ]，更改后款数为${includeKind}`, onOk: () => callback() })
       }
     },
   }

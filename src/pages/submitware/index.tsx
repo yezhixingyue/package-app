@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SubmitPageHeader from '@/components/SubmitPageComps/SubmitPageHeader'
 
 class index extends Component {
   static title: string;
@@ -7,7 +8,9 @@ class index extends Component {
     return (
       <section className='page-common-style-wrap'>
         <header>
-          <div className='page-header-content'>提交入库页面</div>
+          <div className='page-header-content'>
+            <SubmitPageHeader />
+          </div>
         </header>
         <div className="page-content-wrap">
           <div className="page-content">

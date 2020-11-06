@@ -40,7 +40,7 @@ export default function header(props: { location: { pathname: string; }; childre
             <div onClick={onLogoClick} className={styles.logo}></div>
             <ul className="menu-list">
               <li>
-                <NavLink exact to="/labelprint">打印标签</NavLink>
+                <NavLink to="/labelprint">打印标签</NavLink>
               </li>
               <li>
                 <NavLink exact to="/submitware">提交入库</NavLink>
@@ -55,9 +55,12 @@ export default function header(props: { location: { pathname: string; }; childre
           </div>
         </div>
       </Affix>
-      <BackTop style={style} visibilityHeight={400} target={() => document.getElementsByClassName('page-common-style-wrap')[0]}>
-        <ArrowUpOutlined />
-      </BackTop>
+      {
+        document.getElementsByClassName('page-common-style-wrap')[0] ?
+        <BackTop style={style} visibilityHeight={400} target={() => document.getElementsByClassName('page-common-style-wrap')[0]}>
+          <ArrowUpOutlined />
+        </BackTop> : null
+      }
       <div>{props.children}</div>
       <MaskContainer />
     </section>

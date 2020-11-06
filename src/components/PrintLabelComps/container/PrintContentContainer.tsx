@@ -50,4 +50,12 @@ const mapStateToProps = (state:iState) => {
   }
 }
 
-export default connect(mapStateToProps, null)(PrintLabelContent);
+const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: {}; }) => void) => {
+  return {
+    getPrintedList() {
+      dispatch({ type: 'packageStore/getPrintedList', payload: {} });
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrintLabelContent);

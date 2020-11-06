@@ -27,6 +27,17 @@ const api = {
   getPrintPackageCancle(packageID) { // DELETE /Api/PrintPackage/Cancle   包裹撤销
     return instance.delete(`/Api/PrintPackage/Cancle?packageID=${packageID}`);
   },
+  getPrintPackageList(data) { // POST /Api/PrintPackage/List 获取打印包裹号标签(未入库)列表
+    return instance.post('/Api/PrintPackage/List', data);
+  },
+  // GET /Api/UnInstoreList/List 获取未入库包裹标签列表  提交使用
+  getUnInstoreList({ factoryID, page, pageSize }) {
+    let _query = '';
+    if (factoryID) _query += `?factoryID=${factoryID}`;
+    if (page) _query = _query.length > 0 ? _query + `&page=${page}` : `?page=${page}`;
+    if (pageSize) _query = _query.length > 0 ? _query + `&pageSize=${pageSize}` : `?pageSize=${pageSize}`;
+    return instance.get(`/Api/UnInstoreList/List?${pageSize}`);
+  }
 };
 
 export default api;

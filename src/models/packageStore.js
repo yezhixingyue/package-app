@@ -8,6 +8,8 @@ export default {
     curPrintDiaInfo: null, // 当前请求到的要打印的订单信息
     curPrintDiaOnState: false, // 是否展示打印输入款数的弹窗
     hasPrintedPackageList: [], // 已打印的包裹列表
+    printLabelSearchWords: '', // 标签打印页搜索关键字s
+    printLabelSearchResult: null, // 标签打印页搜索结果
   },
   reducers: {
     setCurPrintInfo(state, { payload }) {
@@ -47,7 +49,7 @@ export default {
         hasPrintedPackageList: payload,
       }
     },
-    changeModifyKind(state, { payload }) {
+    changeModifyKind(state, { payload, select }) {
       if (!payload) throw new Error('changeModifyKind payload error!');
       const { packageID, includeKind, orderID } = payload;
       if (!packageID || !includeKind || !orderID) throw new Error('changeModifyKind payload args error!');
@@ -59,6 +61,22 @@ export default {
         _t.UnPrintKindCount = _t.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
         _targetPackage.IncludeKindCount = includeKind;
         sessionStorage.setItem('printedList', JSON.stringify(_list));
+      }
+      const printLabelSearchResult = state.printLabelSearchResult;
+      if (printLabelSearchResult && printLabelSearchResult.length > 0) {
+        const _t2 = printLabelSearchResult.find(it => it.OrderID === orderID);
+        if (_t2) {
+          const _targetPackage = _t2.PackageList.find(packageItem => packageItem.PackageID === packageID);
+          if (_targetPackage) {
+            _t2.UnPrintKindCount = _t2.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
+            _targetPackage.IncludeKindCount = includeKind;
+            return {
+              ...state,
+              printLabelSearchResult,
+              hasPrintedPackageList: _list,
+            }
+          }
+        }
       }
       return {
         ...state,
@@ -75,6 +93,19 @@ export default {
         _t.PackageList.unshift(packageData);
         sessionStorage.setItem('printedList', JSON.stringify(_list));
       }
+      const printLabelSearchResult = state.printLabelSearchResult;
+      if (printLabelSearchResult && printLabelSearchResult.length > 0) {
+        const _t2 = printLabelSearchResult.find(it => it.OrderID === orderID);
+        if (_t2) {
+          const _index = _t2.PackageList.findIndex(it => it.PackageID === packageData.PackageID);
+          if (_index || _index === 0) _t2.PackageList[_index] = packageData;
+          return {
+            ...state,
+            printLabelSearchResult,
+            hasPrintedPackageList: _list,
+          }
+        }
+      }
       return {
         ...state,
         hasPrintedPackageList: _list,
@@ -90,11 +121,37 @@ export default {
         _targetPackage.Status = 255;
         sessionStorage.setItem('printedList', JSON.stringify(_list));
       }
+      const printLabelSearchResult = state.printLabelSearchResult;
+      if (printLabelSearchResult && printLabelSearchResult.length > 0) {
+        const _t2 = printLabelSearchResult.find(it => it.OrderID === orderID);
+        if (_t2) {
+          const _targetPackage = _t2.PackageList.find(_it => _it.PackageID === packageID);
+          _t2.UnPrintKindCount = _t2.UnPrintKindCount + _targetPackage.IncludeKindCount;
+          _targetPackage.Status = 255;
+          return {
+            ...state,
+            printLabelSearchResult,
+            hasPrintedPackageList: _list,
+          }
+        }
+      }
       return {
         ...state,
         hasPrintedPackageList: _list,
       }
     },
+    setPrintLabelSearchResult(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      }
+    },
+    setPrintLabelSearchWords(state, { payload }) {
+      return {
+        ...state,
+        printLabelSearchWords: payload,
+      }
+    }
   },
   effects: {
     *getPrintPackageOrderInfo({ payload }, { call }) { // 根据订单号获取打印标签信息
@@ -163,6 +220,7 @@ export default {
           yield put({ type: 'changeModifyKind', payload });
           return true;
         }
+        return false;
       } catch (error) {
         model.showWarn({ title: '更改款数失败', msg: error });
         return false;
@@ -184,11 +242,57 @@ export default {
           yield put({ type: 'changeRePrintData', payload: { orderID, packageData: res.data.Data }})
           return true;
         }
+        return false;
       } catch (error) {
         model.showWarn({ title: '重新打印失败', msg: error });
         return false;
       }
-    }
+    },
+    *getPrintedList({ payload }, { call, put, select }) { // 获取已打印包裹列表
+      const printedList = yield select(state => state.packageStore.hasPrintedPackageList);
+      console.log(printedList);
+      if (printedList && printedList.length > 0) return;
+      let res;
+      try {
+        res = yield call(api.getPrintPackageList, payload);
+        if (res.data.Status === 1000) {
+          res.data.Data.forEach(it => it.PackageList.reverse());
+          const _list = res.data.Data.reverse();
+          yield put({ type: 'reStoreDataFromStorage', payload: _list });
+          sessionStorage.setItem('printedList', JSON.stringify(_list));
+          return true;
+        }
+        return false;
+      } catch (error) {
+        model.showWarn({ title: '获取已打印列表失败', msg: error });
+        return false;
+      }
+
+    },
+    *searchPackageAtLabelPrintPage({ payload }, { call, put, select }) { // 打印标签页面 搜索包裹
+      yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: null } });
+
+      const { KeyWords } = payload;
+      const localWords = yield select(state => state.packageStore.printLabelSearchWords);
+
+      if (KeyWords !== localWords) yield put({ type: 'setPrintLabelSearchWords', payload: KeyWords });
+
+      let res;
+      try {
+        res = yield call(api.getPrintPackageList, payload);
+        if (res.data.Status === 1000) {
+          res.data.Data.forEach(it => it.PackageList.reverse());
+          const _list = res.data.Data.reverse();
+          yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: _list } });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        model.showWarn({ title: '查询失败', msg: error });
+        return false;
+      }
+
+    },
   },
   subscriptions: {
     reStoreDataFromStorage({ dispatch }) {
@@ -196,6 +300,25 @@ export default {
       if (storagePrintedList) {
         dispatch({ type: 'reStoreDataFromStorage', payload: JSON.parse(storagePrintedList) });
       }
+    },
+    fetchDataByPath({ dispatch, history }) {
+      history.listen(pathData => {
+        console.log(pathData, 'pathData');
+        const { pathname } = pathData;
+        if (pathname === '/') history.push('/labelprint');
+        if (pathname === '/labelprint') {
+          dispatch({ type: 'getPrintedList', payload: { UsePrint: true } });
+          dispatch({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: null } });
+        }
+        if (pathname === '/labelprint/search') {
+          const { keyword } = pathData.query;
+          if (!keyword) return;
+          dispatch({ type: 'searchPackageAtLabelPrintPage', payload: { UsePrint: true, KeyWords: keyword  } });
+        }
+        if (pathname === '/submitware') {
+          
+        }
+      })
     }
   }
 }

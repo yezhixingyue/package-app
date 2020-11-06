@@ -5,6 +5,7 @@ export default defineConfig({
     type: 'none',
   },
   antd: {},
+  history: { type: 'hash' },
   theme: {
     'primary-color': '#428dfa',
     'error-color': '#ff3769',
@@ -15,6 +16,7 @@ export default defineConfig({
       changeOrigin: true, // 开启代理
     },
   },
+  publicPath: process.env.NODE_ENV === 'development' ? '/' : '/Print/',
   // routes: [
   //   { path: '/', component: '@/pages/index' },
   // ],

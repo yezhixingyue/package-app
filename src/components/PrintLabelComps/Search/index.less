@@ -1,9 +1,15 @@
-.mp-print-label-page-content {
+.label-print-page-search-content-wrap {
+  min-height: calc(100vh - 60px - 145px);
+  background-color: #fff;
+  padding-bottom: 50px;
+  box-sizing: border-box;
   padding-top: 25px;
-  min-height: calc(100vh - 60px - 125px);
   > section {
-    margin-bottom: 58px;
     color: #24292e;
+    min-height: 220px;
+    width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 58px;
     > header {
       height: 90px;
       background-color: #f8f8f8;
@@ -174,6 +180,8 @@
     &.last-order-box {
       margin-bottom: 85px;
       box-shadow: 0 12px 12px 0 rgba(0, 0, 0, 0.06);
+      position: relative;
+      // animation: identifier 0.3s;
       > ul.content {
         border: 1px solid #eee;
         border-top: none;
@@ -206,9 +214,29 @@
                 font-size: 14px;
               }
             }
+            &:last-of-type {
+              font-size: 18px;
+              color: #428dfa;
+              > span {
+                cursor: pointer;
+                display: inline-block;
+                transition: 0.2s;
+                padding: 0 15px;
+                &:hover {
+                  color: #35dff9;
+                }
+                &:active {
+                  color: chocolate;
+                }
+              }
+              > i {
+                margin-left: 10px;
+              }
+            }
           }
           &.last-package-box { // 第1个订单的第一行包裹信息
-            // animation: identifier 0.4s;
+            position: relative;
+            // animation: identifier 0.2s;
             > div {
               &:first-of-type {
                 font-size: 18px;
@@ -218,28 +246,16 @@
                   font-size: 20px;
                 }
               }
-              &:nth-of-type(4) {
-                > span:last-of-type {
-                  font-size: 16px;
-                  color: #82c269;
-                  font-weight: 700;
-                  white-space: nowrap;
-                }
-              }
             }
           }
-          // @keyframes identifier {
-          //   from {
-          //     opacity: 0;
-          //     height: 0%;
-          //     padding: 0;
-          //   }
-          //   to {
-          //     opacity: 1;
-          //     height: 100%;
-          //     padding: 25px 30px 25px 18px;
-          //   }
-          // }
+          @keyframes identifier {
+            from {
+              left: -400px;
+            }
+            to {
+              left: 0;
+            }
+          }
         }
       }
       > footer {
@@ -251,6 +267,31 @@
         border-top: none;
         box-sizing: border-box;
         color: #24292e;
+      }
+    }
+  }
+
+  > P {
+    height: 240px;
+    text-align: center;
+    padding: 80px;
+    color: #454d64;
+  }
+
+  > footer {
+    text-align: center;
+    > button {
+      color: #428dfa;
+      border-color: #428dfa;
+      width: 180px;
+      height: 45px;
+      font-size: 16px;
+      border-radius: 4px;
+      &:hover {
+        background-color: #ebf7ff;
+      }
+      &:active {
+        background-color: #b4daf3;
       }
     }
   }

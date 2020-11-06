@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { OrderItemProps, PackageItemProps } from '../../container/PrintContentContainer';
 import styles from './PrintLabelContent.less';
 import { formartDate } from '@/assets/js/utils/utils';
@@ -7,6 +7,7 @@ import PrintLabelContentModelContainer from '../../container/PrintLabelContentMo
 
 interface IProps {
   hasPrintedPackageList: OrderItemProps[],
+  getPrintedList: () => void;
 }
 interface IState {
   visible: boolean,
@@ -23,6 +24,13 @@ export default function PrintLabelContent(props: IProps) {
   };
 
   const [state, setState] = useState(initialState);
+
+  
+  // useEffect(() => {
+  //   console.log('useEffect');
+  //   props.getPrintedList();
+  // }, [])
+
 
   const setModelSwitch = (bool: boolean) => { // 单纯开关弹窗 不控制数据变动
     setState({
@@ -45,6 +53,13 @@ export default function PrintLabelContent(props: IProps) {
       packageData: subPackage,
       curPrintDiaInfo,
     })
+  }
+
+  const getTimeText = (LastPrintTime: string) => {
+    const _time = formartDate(LastPrintTime);
+    const _stamp = new Date(_time).getTime();
+    const _difference = Date.now() - _stamp;
+    return _difference > 3 * 60 * 60 * 1000 ? _time : '刚刚打印';
   }
 
   const items = props.hasPrintedPackageList ? props.hasPrintedPackageList.map((it, index) => { // 每个订单项目
@@ -89,7 +104,7 @@ export default function PrintLabelContent(props: IProps) {
           </div>
           <div>
             <span>最后打印时间：</span>
-            <span>{index === 0 && subIndex === 0 ? '刚刚打印' : formartDate(subPackage.LastPrintTime)}</span>
+            <span>{index === 0 && subIndex === 0 ? getTimeText(subPackage.LastPrintTime) : formartDate(subPackage.LastPrintTime)}</span>
           </div>
           <div>
             {index === 0 && subIndex === 0 ? <Button type="primary" onClick={() => onOperationPrintOrder(subPackage, it)}>操作</Button> : null}

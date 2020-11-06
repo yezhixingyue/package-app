@@ -139,7 +139,7 @@ export default class PrintModel extends React.Component<IProps> {
         ...this.state,
         isUserSettingKind: true,
       })
-    }, 240)
+    }, 150)
   }
 
   handleReturn = () => {
@@ -151,7 +151,7 @@ export default class PrintModel extends React.Component<IProps> {
         ...this.state,
         isUserSettingKind: false,
       })
-    }, 240)
+    }, 150)
   }
 
   componentDidUpdate() {

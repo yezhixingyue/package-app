@@ -32,7 +32,7 @@ export default function PrintLabelContentModel(props: IProps) {
         userSettingNum: props.packageData ? `${props.packageData.IncludeKindCount}` : '',
       })
       props.setModelSwitch(true);
-    }, 250)
+    }, 100)
   }
   const handleCancelPackage = () => {
     props.setModelSwitch(false);
@@ -43,7 +43,7 @@ export default function PrintLabelContentModel(props: IProps) {
         userSettingNum: props.packageData ? `${props.packageData.IncludeKindCount}` : '',
       })
       props.setModelSwitch(true);
-    }, 250)
+    }, 100)
   }
 
   const handleUserSettingNum = (val: string) => {
