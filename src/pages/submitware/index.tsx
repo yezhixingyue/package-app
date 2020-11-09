@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import SubmitPageHeader from '@/components/SubmitPageComps/SubmitPageHeader'
+import React, { Component } from 'react';
+import SubmitOrderListContainer from '@/components/SubmitPageComps/container/SubmitOrderListContainer';
+import SubmitHeaderContainer from '@/components/SubmitPageComps/container/SubmitHeaderContainer';
 
 class index extends Component {
   static title: string;
@@ -9,12 +10,12 @@ class index extends Component {
       <section className='page-common-style-wrap'>
         <header>
           <div className='page-header-content'>
-            <SubmitPageHeader />
+            <SubmitHeaderContainer />
           </div>
         </header>
         <div className="page-content-wrap">
-          <div className="page-content">
-            page-content
+          <div className="page-content" style={{ paddingTop: '25px', minHeight: 'calc(100vh - 180px)', position: 'relative' }}>
+            <SubmitOrderListContainer />
           </div>
         </div>
       </section>

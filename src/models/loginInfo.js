@@ -20,6 +20,8 @@ export default {
     *login({ payload }, { call, put }) {
       sessionStorage.removeItem('loginAuth');
       sessionStorage.removeItem('userDetailInfo');
+      sessionStorage.removeItem('printedList');
+      sessionStorage.removeItem('FactoryList');
       yield put({ type: 'setUserDetailInfo', payload: null });
       const { username, password } = payload;
       let resp;
@@ -42,6 +44,7 @@ export default {
       sessionStorage.removeItem('loginAuth');
       sessionStorage.removeItem('userDetailInfo');
       sessionStorage.removeItem('printedList');
+      sessionStorage.removeItem('FactoryList');
       yield call(delay, 30);
       history.push('/login');
     },

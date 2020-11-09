@@ -14,6 +14,18 @@ export const formartDate = (date:string) => {
   return `${t1}  ${t2}`;
 };
 
+/**
+ * 判断是否为空对象
+ *
+ * @param {object} obj 需要被验证的对象
+ * @returns
+ */
+export const isEmpty = (obj: object) => {
+  return  !Object.getOwnPropertyNames(obj).length &&  !Object.getOwnPropertySymbols(obj).length;
+}
+
+
 export default {
-  formartDate
+  formartDate,
+  isEmpty,
 }

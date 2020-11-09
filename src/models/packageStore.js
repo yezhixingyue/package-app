@@ -1,5 +1,6 @@
 import api from '../services';
 import delay from '../assets/js/utils/delay'
+import { isEmpty } from '../assets/js/utils/utils'
 import model from '../assets/js/utils/model';
 
 
@@ -10,6 +11,19 @@ export default {
     hasPrintedPackageList: [], // 已打印的包裹列表
     printLabelSearchWords: '', // 标签打印页搜索关键字s
     printLabelSearchResult: null, // 标签打印页搜索结果
+    condition4SubmitList: { // 提交入库列表的获取条件
+      page: 1,
+      pageSize: 6,
+      factoryID: '',
+    },
+    submitResult: {
+      OrderList: [],
+      FinishOrderCount: 0,
+      PackageCount: 0,
+      UnFinishOrderCount: 0,
+      DataNumber: 0,
+    }, // 提交入库列表
+    FactoryList: [],
   },
   reducers: {
     setCurPrintInfo(state, { payload }) {
@@ -151,7 +165,28 @@ export default {
         ...state,
         printLabelSearchWords: payload,
       }
-    }
+    },
+    setSubmitList(state, { payload }) {
+      return {
+        ...state,
+        submitResult: {
+          ...state.submitResult,
+          ...payload,
+        },
+      }
+    },
+    changeCondition4SubmitList(state, { payload }) {
+      return {
+        ...state,
+        condition4SubmitList: { ...payload },
+      }
+    },
+    setFactoryList(state, { payload }) {
+      return {
+        ...state,
+        FactoryList: [  { FactoryID: '', FactoryName: '所有工厂' }, ...payload ],
+      }
+    },
   },
   effects: {
     *getPrintPackageOrderInfo({ payload }, { call }) { // 根据订单号获取打印标签信息
@@ -293,6 +328,42 @@ export default {
       }
 
     },
+    *fetchSubmitList({ payload }, { call, put }) {  // 获取提交入库列表
+      let res;
+      try {
+        res = yield call(api.getUnInstoreList, payload);
+        if (res.data.Status === 1000) {
+          yield put({ type: 'setSubmitList', payload: { ...res.data.Data, DataNumber: res.data.DataNumber } });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        model.showWarn({ title: '获取提交入库列表失败', msg: error });
+        return false;
+      }
+    },
+    *fetchFactoryList({ payload }, { call, put, select }) {
+      let FactoryList = yield select(state => state.packageStore.FactoryList);
+      if (FactoryList.length > 0) return;
+      FactoryList = sessionStorage.getItem('FactoryList');
+      if (FactoryList) {
+        yield put({ type: 'setFactoryList', payload: JSON.parse(FactoryList) });
+        return;
+      }
+      let res;
+      try {
+        res = yield call(api.getFactoryList, payload);
+        if (res.data.Status === 1000) {
+          yield put({ type: 'setFactoryList', payload: res.data.Data });
+          sessionStorage.setItem('FactoryList', JSON.stringify(res.data.Data));
+          return true;
+        }
+        return false;
+      } catch (error) {
+        model.showWarn({ title: '获取工厂列表失败', msg: error });
+        return false;
+      }
+    }
   },
   subscriptions: {
     reStoreDataFromStorage({ dispatch }) {
@@ -302,7 +373,7 @@ export default {
       }
     },
     fetchDataByPath({ dispatch, history }) {
-      history.listen(pathData => {
+      history.listen(async pathData => {
         console.log(pathData, 'pathData');
         const { pathname } = pathData;
         if (pathname === '/') history.push('/labelprint');
@@ -316,7 +387,25 @@ export default {
           dispatch({ type: 'searchPackageAtLabelPrintPage', payload: { UsePrint: true, KeyWords: keyword  } });
         }
         if (pathname === '/submitware') {
-          
+          if (isEmpty(pathData.query)) {
+            history.push('?page=1&pageSize=20');
+            return;
+          }
+          const _tempObj = {
+            page: 1,
+            pageSize: 6,
+            ...pathData.query,
+          };
+          _tempObj.page = +_tempObj.page;
+          _tempObj.pageSize = +_tempObj.pageSize;
+          if (_tempObj.factoryID) _tempObj.factoryID = +_tempObj.factoryID;
+          dispatch({ type: 'changeCondition4SubmitList', payload: _tempObj });
+          dispatch({ type: 'fetchFactoryList', payload: {} });
+          await dispatch({ type: 'fetchSubmitList', payload: _tempObj });
+          // console.log(1231);
+          const oDom = document.getElementsByClassName('page-common-style-wrap')[0];
+          // console.log(oDom);
+          if (oDom) oDom.scrollTo(0, 0);
         }
       })
     }

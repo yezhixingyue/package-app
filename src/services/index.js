@@ -30,13 +30,18 @@ const api = {
   getPrintPackageList(data) { // POST /Api/PrintPackage/List 获取打印包裹号标签(未入库)列表
     return instance.post('/Api/PrintPackage/List', data);
   },
-  // GET /Api/UnInstoreList/List 获取未入库包裹标签列表  提交使用
-  getUnInstoreList({ factoryID, page, pageSize }) {
+  getUnInstoreList({ factoryID, page, pageSize }) { // GET /Api/UnInstoreList/List 获取未入库包裹标签列表  提交使用
     let _query = '';
-    if (factoryID) _query += `?factoryID=${factoryID}`;
-    if (page) _query = _query.length > 0 ? _query + `&page=${page}` : `?page=${page}`;
-    if (pageSize) _query = _query.length > 0 ? _query + `&pageSize=${pageSize}` : `?pageSize=${pageSize}`;
-    return instance.get(`/Api/UnInstoreList/List?${pageSize}`);
+    if (factoryID) _query += `factoryID=${factoryID}`;
+    if (page) _query = _query.length > 0 ? _query + `&page=${page}` : `page=${page}`;
+    if (pageSize) _query = _query.length > 0 ? _query + `&pageSize=${pageSize}` : `pageSize=${pageSize}`;
+    return instance.get(`/Api/UnInstoreList/List?${_query}`);
+  },
+  getFactoryList() { // /Api/Constant/VersionValid 获取工厂信息
+    return instance.post('/Api/Constant/VersionValid', { key: 1 });
+  },
+  getPrintPackageInStore(data) { // POST /Api/PrintPackage/InStore 提交入库
+    return instance.post('/Api/PrintPackage/InStore', data);
   }
 };
 

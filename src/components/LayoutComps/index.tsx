@@ -5,6 +5,8 @@ import { Affix, BackTop } from 'antd';
 import { ArrowUpOutlined } from '@ant-design/icons';
 import RightDropDown from '../container/LayoutContainers/RightDropDownContainer';
 import MaskContainer from '@/components/container/MaskContainer';
+import zhCN from 'antd/lib/locale/zh_CN';
+import { ConfigProvider } from 'antd';
 
 
 
@@ -33,36 +35,38 @@ export default function header(props: { location: { pathname: string; }; childre
   };
 
   return (
-    <section className={styles['layout-page']}>
-      <Affix offsetTop={0.1} className={styles.header}>
-        <div>
+    <ConfigProvider locale={zhCN}>
+      <section className={styles['layout-page']}>
+        <Affix offsetTop={0.1} className={styles.header}>
           <div>
-            <div onClick={onLogoClick} className={styles.logo}></div>
-            <ul className="menu-list">
-              <li>
-                <NavLink to="/labelprint">打印标签</NavLink>
-              </li>
-              <li>
-                <NavLink exact to="/submitware">提交入库</NavLink>
-              </li>
-              <li>
-                <NavLink exact to="/operatelog">操作记录</NavLink>
-              </li>
-            </ul>
+            <div>
+              <div onClick={onLogoClick} className={styles.logo}></div>
+              <ul className="menu-list">
+                <li>
+                  <NavLink to="/labelprint">打印标签</NavLink>
+                </li>
+                <li>
+                  <NavLink exact to="/submitware?page=1&pageSize=5&factoryID=">提交入库</NavLink>
+                </li>
+                <li>
+                  <NavLink exact to="/operatelog">操作记录</NavLink>
+                </li>
+              </ul>
+            </div>
+            <div className={styles.user}>
+              <RightDropDown userInfo={props.userDetailInfo} />
+            </div>
           </div>
-          <div className={styles.user}>
-            <RightDropDown userInfo={props.userDetailInfo} />
-          </div>
-        </div>
-      </Affix>
-      {
-        document.getElementsByClassName('page-common-style-wrap')[0] ?
-        <BackTop style={style} visibilityHeight={400} target={() => document.getElementsByClassName('page-common-style-wrap')[0]}>
-          <ArrowUpOutlined />
-        </BackTop> : null
-      }
-      <div>{props.children}</div>
-      <MaskContainer />
-    </section>
+        </Affix>
+        {
+          document.getElementsByClassName('page-common-style-wrap')[0] ?
+            <BackTop style={style} visibilityHeight={400} target={() => document.getElementsByClassName('page-common-style-wrap')[0]}>
+              <ArrowUpOutlined />
+            </BackTop> : null
+        }
+        <div>{props.children}</div>
+        <MaskContainer />
+      </section>
+    </ConfigProvider>
   )
 }
