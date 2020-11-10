@@ -35,7 +35,7 @@ export default function ListComp(props: IProps) {
 
   const EmptyDom = (
     (props.FinishOrderCount === 0 && props.PackageCount === 0 && props.UnFinishOrderCount === 0)
-    ? <div style={{marginTop: '88px'}} className='gray'><Empty description='暂无订单' /></div>
+    ? <div className={`gray ${styles['empty-wrap']}`}><Empty description='该工厂暂无订单' /></div>
     : null
   )
 
@@ -61,13 +61,24 @@ export default function ListComp(props: IProps) {
 
   const { TextArea } = Input;
 
-  const handleForceSubmit = () => {
+  const handleForceSubmit = async () => {
     console.log(state.reMark);
     if (!state.reMark) {
       model.showWarnWithoutMsg({
         title: '请输入强制入库理由!'
       })
       return;
+    }
+    const _tempObj:requestObjType = { IsCoerced: true, Remark: state.reMark };
+    if (props.factoryID) _tempObj.FactoryID = props.factoryID;
+    const res = await api.getPrintPackageInStore(_tempObj);
+    if (res.data.Status === 1000) {
+      model.showSuccess({
+        title: '提交成功',
+        onOk: () => {
+          history.push(`?page=1&pageSize=${props.pageSize}&factoryID=${props.factoryID}`);
+        }
+      })
     }
   }
 
@@ -94,7 +105,7 @@ export default function ListComp(props: IProps) {
           <TextArea placeholder='请输入强行入库理由' value={state.reMark} onChange={onTextAreaChange} showCount maxLength={180} />
         </li>
         <li>
-          <Button type='primary' danger onClick={handleForceSubmit}>强行入库</Button>
+          <Button type='primary' danger disabled={!state.reMark} onClick={handleForceSubmit}>强行入库</Button>
           <Button type='primary' onClick={onModelCancel}>暂不入库</Button>
         </li>
       </ul>
@@ -121,7 +132,7 @@ export default function ListComp(props: IProps) {
     if (props.UnFinishOrderCount === 0) {
       model.showConfirm({
         title: '确定提交入库吗?',
-        msg: `本次共有${props.PackageCount}个包裹可入库`,
+        msg: `本次入库共有${props.PackageCount}个包裹`,
         onOk: handleNormalSubmit
       })
     } else {
@@ -147,6 +158,7 @@ export default function ListComp(props: IProps) {
         showQuickJumper
         current={props.page}
         onChange={onChange}
+        size='small'
         total={props.DataNumber}
         pageSize={props.pageSize}
        />

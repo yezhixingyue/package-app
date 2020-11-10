@@ -71,9 +71,10 @@ axios.interceptors.response.use(
       }
       let _msg = '错误';
       if (_url === '/Api/Staff/Login') _msg = '登录失败';
-      if (_url === '/Api/Staff/Detail') _msg = '获取登录用户信息失败';
-      if (_url === '/Api/PrintPackage/OrderInfo') _msg = '打印标签失败';
-      if (_url === '/Api/PrintPackage/List') _msg = '获取或查询打印列表失败';
+      if (_url === '/Api/Staff/Detail') _msg = '获取用户信息失败';
+      if (_url === '/Api/PrintPackage/OrderInfo') _msg = '打印失败';
+      if (_url === '/Api/PrintPackage/List') _msg = '获取或查询列表失败';
+      if (_url === '/Api/PrintPackage/InStore') _msg = '提交失败';
 
       _obj.title = _msg;
       model.showWarn(_obj);

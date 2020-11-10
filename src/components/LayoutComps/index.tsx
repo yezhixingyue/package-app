@@ -46,7 +46,7 @@ export default function header(props: { location: { pathname: string; }; childre
                   <NavLink to="/labelprint">打印标签</NavLink>
                 </li>
                 <li>
-                  <NavLink exact to="/submitware?page=1&pageSize=5&factoryID=">提交入库</NavLink>
+                  <NavLink exact to="/submitware?page=1&pageSize=6&factoryID=">提交入库</NavLink>
                 </li>
                 <li>
                   <NavLink exact to="/operatelog">操作记录</NavLink>

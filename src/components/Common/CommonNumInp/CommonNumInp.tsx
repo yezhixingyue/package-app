@@ -67,7 +67,7 @@ export default class NumericInput extends React.Component<IProps, {}> {
           {...this.props}
           onChange={this.onChange}
           onBlur={this.onBlur}
-          maxLength={25}
+          maxLength={15}
         />
       </Tooltip>
     );

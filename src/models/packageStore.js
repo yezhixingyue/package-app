@@ -24,6 +24,21 @@ export default {
       DataNumber: 0,
     }, // 提交入库列表
     FactoryList: [],
+    condition4LogList: {
+      Page: 1,
+      PageSize: 10,
+      FactoryID: '',
+      KeyWords: '',
+      PrintTime: {
+        first: '',
+        second: '',
+      },
+      oldKeyWords: '',
+    },
+    logResult: {
+      DataNumber: 0,
+      logList: [],
+    },
   },
   reducers: {
     setCurPrintInfo(state, { payload }) {
@@ -33,7 +48,6 @@ export default {
       }
     },
     setModelState(state, { payload }) {
-      console.log(payload);
       return {
         ...state,
         ...payload,
@@ -46,6 +60,7 @@ export default {
       curOrderData.PackageList.push(packageData);
       curOrderData.PackageList.reverse();
       curOrderData.UnPrintKindCount = curOrderData.UnPrintKindCount - packageData.IncludeKindCount < 0 ? 0 : curOrderData.UnPrintKindCount - packageData.IncludeKindCount;
+      curOrderData.IncludeKindCount = curOrderData.IncludeKindCount + packageData.IncludeKindCount > curOrderData.KindCount ? curOrderData.KindCount : curOrderData.IncludeKindCount + packageData.IncludeKindCount;
       list.unshift(curOrderData);
       // 此处保存缓存
       sessionStorage.setItem('printedList', JSON.stringify(list));
@@ -73,6 +88,7 @@ export default {
       const _targetPackage = _t.PackageList.find(packageItem => packageItem.PackageID === packageID);
       if (_targetPackage) {
         _t.UnPrintKindCount = _t.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
+        _t.IncludeKindCount = _t.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
         _targetPackage.IncludeKindCount = includeKind;
         sessionStorage.setItem('printedList', JSON.stringify(_list));
       }
@@ -83,6 +99,7 @@ export default {
           const _targetPackage = _t2.PackageList.find(packageItem => packageItem.PackageID === packageID);
           if (_targetPackage) {
             _t2.UnPrintKindCount = _t2.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
+            _t.IncludeKindCount = _t.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
             _targetPackage.IncludeKindCount = includeKind;
             return {
               ...state,
@@ -132,6 +149,7 @@ export default {
       if (_t) {
         const _targetPackage = _t.PackageList.find(_it => _it.PackageID === packageID);
         _t.UnPrintKindCount = _t.UnPrintKindCount + _targetPackage.IncludeKindCount;
+        _t.IncludeKindCount = _t.IncludeKindCount - _targetPackage.IncludeKindCount;
         _targetPackage.Status = 255;
         sessionStorage.setItem('printedList', JSON.stringify(_list));
       }
@@ -141,6 +159,7 @@ export default {
         if (_t2) {
           const _targetPackage = _t2.PackageList.find(_it => _it.PackageID === packageID);
           _t2.UnPrintKindCount = _t2.UnPrintKindCount + _targetPackage.IncludeKindCount;
+          _t.IncludeKindCount = _t.IncludeKindCount - _targetPackage.IncludeKindCount;
           _targetPackage.Status = 255;
           return {
             ...state,
@@ -187,6 +206,18 @@ export default {
         FactoryList: [  { FactoryID: '', FactoryName: '所有工厂' }, ...payload ],
       }
     },
+    changeCondition4LogList(state, { payload }) {
+      return {
+        ...state,
+        condition4LogList: { ...state.condition4LogList, ...payload },
+      }
+    },
+    setLogList(state, { payload }) {
+      return {
+        ...state,
+        logResult: { ...payload },
+      }
+    },
   },
   effects: {
     *getPrintPackageOrderInfo({ payload }, { call }) { // 根据订单号获取打印标签信息
@@ -194,7 +225,7 @@ export default {
       try {
         res = yield call(api.getPrintPackageOrderInfo, payload);
       } catch (error) {
-        model.showWarn({ title: '获取订单信息', msg: error });
+        model.showWarn({ title: '获取订单信息失败', msg: error });
         return false;
       }
       if (res && res.data.Status === 1000) {
@@ -363,15 +394,32 @@ export default {
         model.showWarn({ title: '获取工厂列表失败', msg: error });
         return false;
       }
-    }
-  },
-  subscriptions: {
-    reStoreDataFromStorage({ dispatch }) {
-      const storagePrintedList = sessionStorage.getItem('printedList');
-      if (storagePrintedList) {
-        dispatch({ type: 'reStoreDataFromStorage', payload: JSON.parse(storagePrintedList) });
+    },
+    *fetchOperaLogList({ payload }, { call, select, put }) {
+      const { KeyWords } = payload;
+      yield put({ type: 'changeCondition4LogList', payload: { KeyWords: KeyWords ? KeyWords : '' } });
+      let res;
+      try {
+        res = yield call(api.getPrintPackageList, payload);
+        if (res.data.Status === 1000) {
+          console.log(res);
+          yield put({ type: 'setLogList', payload: { logList: res.data.Data, DataNumber: res.data.DataNumber } });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        model.showWarn({ title: '获取提交入库列表失败', msg: error });
+        return false;
       }
     },
+  },
+  subscriptions: {
+    // reStoreDataFromStorage({ dispatch }) {
+    //   const storagePrintedList = sessionStorage.getItem('printedList');
+    //   if (storagePrintedList) {
+    //     dispatch({ type: 'reStoreDataFromStorage', payload: JSON.parse(storagePrintedList) });
+    //   }
+    // },
     fetchDataByPath({ dispatch, history }) {
       history.listen(async pathData => {
         console.log(pathData, 'pathData');
@@ -388,7 +436,7 @@ export default {
         }
         if (pathname === '/submitware') {
           if (isEmpty(pathData.query)) {
-            history.push('?page=1&pageSize=20');
+            history.push('?page=1&pageSize=6');
             return;
           }
           const _tempObj = {
@@ -402,9 +450,31 @@ export default {
           dispatch({ type: 'changeCondition4SubmitList', payload: _tempObj });
           dispatch({ type: 'fetchFactoryList', payload: {} });
           await dispatch({ type: 'fetchSubmitList', payload: _tempObj });
-          // console.log(1231);
           const oDom = document.getElementsByClassName('page-common-style-wrap')[0];
-          // console.log(oDom);
+          if (oDom) oDom.scrollTo(0, 0);
+        }
+        if (pathname === '/operatelog') {
+          if (isEmpty(pathData.query)) {
+            history.push('?Page=1&PageSize=10&FactoryID=');
+            return;
+          }
+          dispatch({ type: 'fetchFactoryList', payload: {} });
+          // const { KeyWords } = pathData.query;
+          // const _keyWords = KeyWords ? KeyWords : '';
+          const _tempObj = {
+            Page: 1,
+            PageSize: 10,
+            ...pathData.query,
+          };
+          _tempObj.Page = +_tempObj.Page;
+          _tempObj.PageSize = +_tempObj.PageSize;
+          if (_tempObj.FactoryID) _tempObj.FactoryID = +_tempObj.FactoryID;
+          dispatch({ type: 'changeCondition4LogList', payload: _tempObj });
+          _tempObj.IncludeCancled = true;
+          _tempObj.HaveInstored = false;
+          _tempObj.UsePrint = false;
+          await dispatch({ type: 'fetchOperaLogList', payload: _tempObj });
+          const oDom = document.getElementsByClassName('page-common-style-wrap')[0];
           if (oDom) oDom.scrollTo(0, 0);
         }
       })

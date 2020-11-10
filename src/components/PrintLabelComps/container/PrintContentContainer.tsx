@@ -29,6 +29,7 @@ export interface OrderItemProps {
   CustomerSN: string,
   CustomerName: string,
   ProductName: string,
+  IncludeKindCount: number,
   ProductClass: {
     First: string,
     Second: string,

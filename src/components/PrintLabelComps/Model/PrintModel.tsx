@@ -6,6 +6,7 @@ import CommonNumInp from '../../Common/CommonNumInp/CommonNumInp';
 
 interface packageItem {
   IncludeKindCount: number,
+  Status: number,
 }
 
 export interface printInfo {
@@ -90,7 +91,7 @@ export default class PrintModel extends React.Component<IProps> {
       } else {
         let key = true;
         this.props.curPrintDiaInfo.PackageList.forEach(it => {
-          if (!key) return;
+          if (!key || it.Status === 255) return;
           if (it.IncludeKindCount > 1) key = false;
         })
         if (!key) {
@@ -158,9 +159,10 @@ export default class PrintModel extends React.Component<IProps> {
     if (this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount === 0) {
       let key = true;
       this.props.curPrintDiaInfo.PackageList.forEach(it => {
-        if (!key) return;
+        if (!key || it.Status === 255) return;
         if (it.IncludeKindCount > 1) key = false;
       })
+      console.log(this.props.curPrintDiaInfo.PackageList);
       if (!key) {
         model.showWarn({
           title: '该订单存在合包，不允许再拆包!',
@@ -191,7 +193,7 @@ export default class PrintModel extends React.Component<IProps> {
       <span className='is-font-16'>共 <i className='is-font-26 is-pink is-bold'>{this.props.curPrintDiaInfo.KindCount}</i> 款</span>
       <span className='is-font-18'>
         （ {this.props.curPrintDiaInfo.ProductAmount + this.props.curPrintDiaInfo.Unit}/款 ），
-        已打印 <i className='is-font-26 is-pink is-bold'>{this.props.curPrintDiaInfo.PackageList.length}</i> 个包裹
+        已打印 <i className='is-font-26 is-pink is-bold'>{this.props.curPrintDiaInfo.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹
         （ 共包含 <i className='is-bold'>{+(this.props.curPrintDiaInfo.KindCount - this.props.curPrintDiaInfo.UnPrintKindCount).toFixed(0)}</i> 款 ）
       </span>
     </div>
@@ -216,7 +218,7 @@ export default class PrintModel extends React.Component<IProps> {
                 {this.contentHeader}
                 <div style={{ marginTop: '58px', marginBottom: '15px' }}>
                   <span className='is-pink is-font-24'>{this.props.curPrintDiaInfo.KindCount} 款已全部打印</span>
-                  <span className='is-font-18 is-black'>（已打印 {this.props.curPrintDiaInfo.PackageList.length} 个包裹标签）</span>
+                  <span className='is-font-18 is-black'>（已打印 {this.props.curPrintDiaInfo.PackageList.filter(it => it.Status !== 255).length} 个包裹标签）</span>
                 </div>
                 <div>
                   <span className='is-pink is-font-28'>确定打印新包裹标签吗?</span>

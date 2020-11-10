@@ -19,6 +19,9 @@
 }
 .pagination {
   margin-top: -70px;
+  > li {
+    margin: 0 5px !important;
+  }
 }
 .in-store-model-wrap {
   padding-bottom: 80px;
@@ -53,8 +56,8 @@
               color: #888;
             }
             border-radius: 5px;
-            padding-top: 1px;
-            font-size: 16px;
+            padding-top: 2px;
+            font-size: 15px;
           }
         }
       }
@@ -71,4 +74,10 @@
       }
     }
   }
+}
+.empty-wrap {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 50px);
+  transform: translate(-50%, -50%);
 }

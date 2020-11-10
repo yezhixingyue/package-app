@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { OrderItemProps, PackageItemProps } from '../../container/PrintContentContainer';
 import styles from './PrintLabelContent.less';
 import { formartDate } from '@/assets/js/utils/utils';
-import { Button } from 'antd';
+import { Button, Empty } from 'antd';
 import PrintLabelContentModelContainer from '../../container/PrintLabelContentModelContainer';
 
 interface IProps {
@@ -24,13 +24,6 @@ export default function PrintLabelContent(props: IProps) {
   };
 
   const [state, setState] = useState(initialState);
-
-  
-  // useEffect(() => {
-  //   console.log('useEffect');
-  //   props.getPrintedList();
-  // }, [])
-
 
   const setModelSwitch = (bool: boolean) => { // 单纯开关弹窗 不控制数据变动
     setState({
@@ -62,7 +55,7 @@ export default function PrintLabelContent(props: IProps) {
     return _difference > 3 * 60 * 60 * 1000 ? _time : '刚刚打印';
   }
 
-  const items = props.hasPrintedPackageList ? props.hasPrintedPackageList.map((it, index) => { // 每个订单项目
+  const items = props.hasPrintedPackageList && props.hasPrintedPackageList.length > 0 ? props.hasPrintedPackageList.map((it, index) => { // 每个订单项目
     return (<section key={it.OrderID} className={index === 0 ? styles['last-order-box'] : ''}>
       <header>
         <div>
@@ -112,15 +105,15 @@ export default function PrintLabelContent(props: IProps) {
         </li>))}
       </ul>
       <footer className='is-font-14'>
-        <span>已打印 <i className={index === 0 ? 'is-font-20 is-bold' : 'is-font-16 is-bold'}>{it.PackageList.length}</i> 个包裹（含 {it.KindCount - it.UnPrintKindCount} 款），
+        <span>已打印 <i className={index === 0 ? 'is-font-20 is-bold' : 'is-font-16 is-bold'}>{it.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹（含 {it.IncludeKindCount} 款），
         剩余 <i className={index === 0 ? 'is-font-20 is-pink' : 'is-font-16 is-pink'}>{it.UnPrintKindCount}</i> 款未出标签 </span>
       </footer>
     </section>)
-  }) : null;
+  }) : <Empty className={styles['empty-wrap']} description='暂无已打印数据' />;
 
   return (
     <>
-      <article className={styles['mp-print-label-page-content']}>
+      <article className={styles['mp-print-label-page-content']} style={{position: 'relative'}}>
         {items}
       </article>
       <PrintLabelContentModelContainer {...state} setModelSwitch={setModelSwitch} clearModelData={clearModelData} />

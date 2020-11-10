@@ -1,15 +1,8 @@
-# umi project
+# 包裹状态
 
-## Getting Started
+  正常(未入库)  0
 
-Install dependencies,
+  已入库       200
 
-```bash
-$ yarn
-```
-
-Start the dev server,
-
-```bash
-$ yarn start
-```
+  已取消       255
+  
