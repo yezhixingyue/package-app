@@ -2,6 +2,38 @@ import api from '../services';
 import delay from '../assets/js/utils/delay'
 import { isEmpty } from '../assets/js/utils/utils'
 import model from '../assets/js/utils/model';
+import getDate from '../assets/js/date';
+
+const setAndFilterDate = obj => {
+  if (!obj.dateType) return;
+  switch (obj.dateType) {
+    case 'all':
+      delete obj.PrintTime;
+      break;
+    case 'today': 
+      obj.PrintTime = getDate.TodayDate();
+      break;
+    case 'yestday': 
+      obj.PrintTime = getDate.YesterdayDate();
+      break;
+    case 'week': 
+      obj.PrintTime = getDate.TodayDate();
+      break;
+    case 'month': 
+      obj.PrintTime = getDate.curMonthDate();
+      break;
+    case 'define': 
+      obj.PrintTime = {
+        First: `${obj.First}T00:00:00.000`,
+        Second: `${obj.Second}T23:59:59.997`,
+      }
+      delete obj.First;
+      delete obj.Second;
+      break;
+    default:
+      break;
+  }
+}
 
 
 export default {
@@ -30,13 +62,15 @@ export default {
       FactoryID: '',
       KeyWords: '',
       PrintTime: {
-        first: '',
-        second: '',
+        First: '',
+        Second: '',
       },
       oldKeyWords: '',
+      dateType: 'today',
     },
     logResult: {
       DataNumber: 0,
+      Message: 0,
       logList: [],
     },
   },
@@ -78,19 +112,22 @@ export default {
         hasPrintedPackageList: payload,
       }
     },
-    changeModifyKind(state, { payload, select }) {
+    changeModifyKind(state, { payload }) {
       if (!payload) throw new Error('changeModifyKind payload error!');
       const { packageID, includeKind, orderID } = payload;
       if (!packageID || !includeKind || !orderID) throw new Error('changeModifyKind payload args error!');
       const _list = state.hasPrintedPackageList;
       const _t = _list.find(it => it.OrderID === orderID);
-      if (!_t) throw new Error('can not find target order!');
-      const _targetPackage = _t.PackageList.find(packageItem => packageItem.PackageID === packageID);
-      if (_targetPackage) {
-        _t.UnPrintKindCount = _t.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
-        _t.IncludeKindCount = _t.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
-        _targetPackage.IncludeKindCount = includeKind;
-        sessionStorage.setItem('printedList', JSON.stringify(_list));
+      if (_t) {
+        const _targetPackage = _t.PackageList.find(packageItem => packageItem.PackageID === packageID);
+        if (_targetPackage) {
+          _t.UnPrintKindCount = _t.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
+          _t.IncludeKindCount = _t.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
+          if (_t.IncludeKindCount > _t.KindCount) _t.IncludeKindCount = _t.KindCount;
+          if (_t.IncludeKindCount < 0) _t.IncludeKindCount = 0;
+          _targetPackage.IncludeKindCount = includeKind;
+          sessionStorage.setItem('printedList', JSON.stringify(_list));
+        }
       }
       const printLabelSearchResult = state.printLabelSearchResult;
       if (printLabelSearchResult && printLabelSearchResult.length > 0) {
@@ -99,7 +136,9 @@ export default {
           const _targetPackage = _t2.PackageList.find(packageItem => packageItem.PackageID === packageID);
           if (_targetPackage) {
             _t2.UnPrintKindCount = _t2.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
-            _t.IncludeKindCount = _t.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
+            _t2.IncludeKindCount = _t2.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
+            if (_t2.IncludeKindCount > _t2.KindCount) _t2.IncludeKindCount = _t2.KindCount;
+            if (_t2.IncludeKindCount < 0) _t2.IncludeKindCount = 0;
             _targetPackage.IncludeKindCount = includeKind;
             return {
               ...state,
@@ -150,6 +189,8 @@ export default {
         const _targetPackage = _t.PackageList.find(_it => _it.PackageID === packageID);
         _t.UnPrintKindCount = _t.UnPrintKindCount + _targetPackage.IncludeKindCount;
         _t.IncludeKindCount = _t.IncludeKindCount - _targetPackage.IncludeKindCount;
+        if (_t.IncludeKindCount > _t.KindCount) _t.IncludeKindCount = _t.KindCount;
+        if (_t.IncludeKindCount < 0) _t.IncludeKindCount = 0;
         _targetPackage.Status = 255;
         sessionStorage.setItem('printedList', JSON.stringify(_list));
       }
@@ -159,7 +200,9 @@ export default {
         if (_t2) {
           const _targetPackage = _t2.PackageList.find(_it => _it.PackageID === packageID);
           _t2.UnPrintKindCount = _t2.UnPrintKindCount + _targetPackage.IncludeKindCount;
-          _t.IncludeKindCount = _t.IncludeKindCount - _targetPackage.IncludeKindCount;
+          _t2.IncludeKindCount = _t2.IncludeKindCount - _targetPackage.IncludeKindCount;
+          if (_t2.IncludeKindCount > _t2.KindCount) _t2.IncludeKindCount = _t2.KindCount;
+          if (_t2.IncludeKindCount < 0) _t2.IncludeKindCount = 0;
           _targetPackage.Status = 255;
           return {
             ...state,
@@ -207,6 +250,7 @@ export default {
       }
     },
     changeCondition4LogList(state, { payload }) {
+      console.log(payload);
       return {
         ...state,
         condition4LogList: { ...state.condition4LogList, ...payload },
@@ -310,13 +354,11 @@ export default {
         }
         return false;
       } catch (error) {
-        model.showWarn({ title: '重新打印失败', msg: error });
         return false;
       }
     },
     *getPrintedList({ payload }, { call, put, select }) { // 获取已打印包裹列表
       const printedList = yield select(state => state.packageStore.hasPrintedPackageList);
-      console.log(printedList);
       if (printedList && printedList.length > 0) return;
       let res;
       try {
@@ -330,7 +372,6 @@ export default {
         }
         return false;
       } catch (error) {
-        model.showWarn({ title: '获取已打印列表失败', msg: error });
         return false;
       }
 
@@ -400,15 +441,14 @@ export default {
       yield put({ type: 'changeCondition4LogList', payload: { KeyWords: KeyWords ? KeyWords : '' } });
       let res;
       try {
+        yield put({ type: 'setLogList', payload: { logList: [], DataNumber: 0, Message: 0 } });
         res = yield call(api.getPrintPackageList, payload);
         if (res.data.Status === 1000) {
-          console.log(res);
-          yield put({ type: 'setLogList', payload: { logList: res.data.Data, DataNumber: res.data.DataNumber } });
+          yield put({ type: 'setLogList', payload: { logList: res.data.Data, DataNumber: res.data.DataNumber, Message: res.data.Message } });
           return true;
         }
         return false;
       } catch (error) {
-        model.showWarn({ title: '获取提交入库列表失败', msg: error });
         return false;
       }
     },
@@ -455,7 +495,7 @@ export default {
         }
         if (pathname === '/operatelog') {
           if (isEmpty(pathData.query)) {
-            history.push('?Page=1&PageSize=10&FactoryID=');
+            history.push('?Page=1&PageSize=10&FactoryID=&dateType=today');
             return;
           }
           dispatch({ type: 'fetchFactoryList', payload: {} });
@@ -469,10 +509,20 @@ export default {
           _tempObj.Page = +_tempObj.Page;
           _tempObj.PageSize = +_tempObj.PageSize;
           if (_tempObj.FactoryID) _tempObj.FactoryID = +_tempObj.FactoryID;
-          dispatch({ type: 'changeCondition4LogList', payload: _tempObj });
+          console.log(_tempObj);
+          if (_tempObj.dateType === 'define') {
+            setAndFilterDate(_tempObj);
+            dispatch({ type: 'changeCondition4LogList', payload: _tempObj });
+          } else {
+            dispatch({ type: 'changeCondition4LogList', payload: _tempObj });
+            setAndFilterDate(_tempObj);
+          }
+          
+          
           _tempObj.IncludeCancled = true;
           _tempObj.HaveInstored = false;
           _tempObj.UsePrint = false;
+          delete _tempObj.dateType;
           await dispatch({ type: 'fetchOperaLogList', payload: _tempObj });
           const oDom = document.getElementsByClassName('page-common-style-wrap')[0];
           if (oDom) oDom.scrollTo(0, 0);

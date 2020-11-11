@@ -11,7 +11,7 @@ function index() {
         </div>
       </header>
       <div className="page-content-wrap">
-        <div className="page-content" style={{ paddingTop: '25px', minHeight: 'calc(100vh - 200px)', position: 'relative', paddingBottom: '50px' }}>
+        <div className="page-content" style={{ paddingTop: '25px', minHeight: 'calc(100vh - 205px)', position: 'relative', paddingBottom: '50px' }}>
           <LogPageContentContainer />
         </div>
       </div>

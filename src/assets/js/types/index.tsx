@@ -36,6 +36,7 @@ export interface OrderItemProps {
   },
   KindCount: number,
   ProductAmount: number,
+  IncludeKindCount: number,
   Unit: string,
   Content: string,
   CustomerSN: string,

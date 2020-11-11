@@ -16,6 +16,13 @@ const mapStateToProps = (state: { packageStore: { submitResult: submitResultType
   }
 }
 
+const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: any[]; }) => void) => {
+  return {
+    clearPrintedListAfterSubmitSuccess() {
+      dispatch({ type: 'packageStore/reStoreDataFromStorage', payload: [] })
+    }
+  }
+}
 
 
-export default connect(mapStateToProps, null)(SubmitOrderList);
+export default connect(mapStateToProps, mapDispatchToProps)(SubmitOrderList);

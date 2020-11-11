@@ -18,6 +18,7 @@ interface IProps {
   pageSize: number,
   DataNumber: number,
   factoryID: number,
+  clearPrintedListAfterSubmitSuccess: () => void,
 }
 
 interface requestObjType {
@@ -73,6 +74,7 @@ export default function ListComp(props: IProps) {
     if (props.factoryID) _tempObj.FactoryID = props.factoryID;
     const res = await api.getPrintPackageInStore(_tempObj);
     if (res.data.Status === 1000) {
+      props.clearPrintedListAfterSubmitSuccess();
       model.showSuccess({
         title: '提交成功',
         onOk: () => {
@@ -117,6 +119,7 @@ export default function ListComp(props: IProps) {
     if (props.factoryID) _tempObj.FactoryID = props.factoryID;
     const res = await api.getPrintPackageInStore(_tempObj);
     if (res.data.Status === 1000) {
+      props.clearPrintedListAfterSubmitSuccess();
       model.showSuccess({
         title: '提交成功',
         onOk: () => {

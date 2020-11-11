@@ -106,7 +106,7 @@ export default function LabelPrintPageSearchIndex(props: IProps) {
               </li>))}
             </ul>
             <footer className='is-font-14'>
-              <span>已打印 <i className={index === 0 ? 'is-font-20 is-bold' : 'is-font-16 is-bold'}>{it.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹（含 {it.KindCount - it.UnPrintKindCount} 款），
+              <span>已打印 <i className={index === 0 ? 'is-font-20 is-bold' : 'is-font-16 is-bold'}>{it.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹（含 {it.IncludeKindCount} 款），
               剩余 <i className={index === 0 ? 'is-font-20 is-pink' : 'is-font-16 is-pink'}>{it.UnPrintKindCount}</i> 款未出标签 </span>
             </footer>
           </section>)

@@ -83,6 +83,9 @@ table {
 .is-font-16 {
   font-size: 16px !important;
 }
+.is-font-15 {
+  font-size: 15px !important;
+}
 .is-font-14 {
   font-size: 14px !important;
 }
@@ -226,12 +229,13 @@ table {
               border-radius: 5px;
               box-shadow: none;
               text-shadow: none;
-              &:active {
-                background: #eee;
-              }
               &:hover {
                 text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.145)
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.145);
+                background-color: mix(#fff, #428dfa, 90%);
+              }
+              &:active {
+                background-color: #94bbf5d2;
               }
             }
           }

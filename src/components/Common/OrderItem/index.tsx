@@ -62,7 +62,7 @@ export default function OrderItem(prop: IProps) {
         </li>))}
       </ul>
       <footer className='is-font-14'>
-        <span>已打印 <i className={'is-font-16 is-bold'}>{prop.orderData.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹（含 {prop.orderData.KindCount - prop.orderData.UnPrintKindCount} 款），
+        <span>已打印 <i className={'is-font-16 is-bold'}>{prop.orderData.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹（含 {prop.orderData.IncludeKindCount} 款），
               剩余 <i className={'is-font-16 is-pink'}>{prop.orderData.UnPrintKindCount}</i> 款未出标签 </span>
       </footer>
     </section>

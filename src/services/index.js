@@ -42,7 +42,11 @@ const api = {
   },
   getPrintPackageInStore(data) { // POST /Api/PrintPackage/InStore 提交入库
     return instance.post('/Api/PrintPackage/InStore', data);
-  }
+  },
+  // POST /Api/PrintPackage/Excel   导出操作记录列表为Excel表格
+  getPrintPackageExcel(data) {
+    return instance.post('/Api/PrintPackage/Excel', data);
+  },
 };
 
 export default api;

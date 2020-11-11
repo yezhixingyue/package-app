@@ -48,7 +48,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => {
     if (loadingInstance) loadingInstance.close();
-    const _list2NotNeed2Toast = [];
+    const _list2NotNeed2Toast = ['/Api/PrintPackage/Excel'];
     const _statusList2NotNeed2Toast = [1000, 9062, 9169];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
@@ -90,6 +90,16 @@ axios.interceptors.response.use(
       let r;
       let buffterRes;
       let buffterErr = '文件导出数据过大，请缩小导出时间区间或精确筛选条件';
+
+      // console.log(error.response);
+      const _url = error.response.config.url.split('?')[0];
+      let _msg = '错误';
+      if (_url === '/Api/Staff/Login') _msg = '登录失败';
+      if (_url === '/Api/Staff/Detail') _msg = '获取用户信息失败';
+      if (_url === '/Api/PrintPackage/OrderInfo') _msg = '打印失败';
+      if (_url === '/Api/PrintPackage/List') _msg = '获取数据失败';
+      if (_url === '/Api/PrintPackage/InStore') _msg = '提交失败';
+      console.log(_msg);
       switch (error.response.status) {
         case 401:
           history.replace('/login');
@@ -104,12 +114,12 @@ axios.interceptors.response.use(
           if (buffterRes && buffterRes.currentTarget && buffterRes.currentTarget.result) {
             buffterErr = buffterRes.currentTarget.result;
           }
-          model.showWarn({ msg: `[ 错误 413：${buffterErr} ]` });
+          model.showWarn({ title: _msg, msg: `[ 错误 413：${buffterErr} ]` });
           // alert(`错误 413：${buffterErr}`);
           key = true;
           break;
         default:
-          model.showWarn({ msg: `[ 错误代码${error.response.status}：${error.response.statusText}]` });
+          model.showWarn({ title: _msg, msg: `[ 错误代码${error.response.status}：${error.response.statusText}]` });
           // alert(`[ 错误代码${error.response.status}：${error.response.statusText}]`);
           key = true;
           break;

@@ -1,0 +1,61 @@
+.date-select-comp-wrap {
+  display: flex;
+  margin-top: 22px;
+  font-size: 15px;
+  color: #585858;
+  > span {
+    font-weight: 700;
+    line-height: 25px;
+  }
+  > ul {
+    display: flex;
+    > li {
+      padding: 0 11px;
+      box-sizing: border-box;
+      border: 1px solid rgba(0, 0, 0, 0);
+      line-height: 23px;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 5px;
+      transition: 0.3s;
+      &.active {
+        border-color: #428dfa;
+        color: #428dfa;
+
+      }
+      &:not(:last-of-type){
+        margin-right: 25px;
+      }
+    }
+  }
+}
+.date-model {
+  :global {
+    .ant-modal-content {
+      border-radius: 4px;
+      // overflow: hidden;
+      .ant-modal-header {
+        padding: 10px 24px;
+        border-radius: 4px;
+        background-color: rgb(252, 252, 252);
+      }
+      .ant-modal-body {
+        padding: 45px 30px;
+        text-align: center;
+        padding-right: 100px;
+      }
+      .ant-modal-footer {
+        padding: 18px 16px;
+        border: none;
+        > button {
+          width: 108px;
+          height: 34px;
+          font-size: 15px;
+          & + button {
+            margin-left: 24px;
+          }
+        }
+      }
+    }
+  }
+}
