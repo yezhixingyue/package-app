@@ -17,7 +17,7 @@ const setAndFilterDate = obj => {
       obj.PrintTime = getDate.YesterdayDate();
       break;
     case 'week': 
-      obj.PrintTime = getDate.TodayDate();
+      obj.PrintTime = getDate.curWeek();
       break;
     case 'month': 
       obj.PrintTime = getDate.curMonthDate();
@@ -89,12 +89,14 @@ export default {
     },
     addItemDataToPackageList(state, { payload }) {
        //大于0的情况， 需要判断： 1.原列表中是否有该订单 如果是则添加混合在一起  2.如果没有则整体添加到列表中
+       console.log(payload);
       const { packageData, curOrderData } = payload;
       let list = state.hasPrintedPackageList.filter(it => it.OrderID !== curOrderData.OrderID);
       curOrderData.PackageList.push(packageData);
       curOrderData.PackageList.reverse();
-      curOrderData.UnPrintKindCount = curOrderData.UnPrintKindCount - packageData.IncludeKindCount < 0 ? 0 : curOrderData.UnPrintKindCount - packageData.IncludeKindCount;
+      curOrderData.UnPrintKindCount = packageData.UnPrintKindCount;
       curOrderData.IncludeKindCount = curOrderData.IncludeKindCount + packageData.IncludeKindCount > curOrderData.KindCount ? curOrderData.KindCount : curOrderData.IncludeKindCount + packageData.IncludeKindCount;
+      if (curOrderData.IncludeKindCount > curOrderData.KindCount - curOrderData.UnPrintKindCount) curOrderData.IncludeKindCount = curOrderData.KindCount - curOrderData.UnPrintKindCount;
       list.unshift(curOrderData);
       // 此处保存缓存
       sessionStorage.setItem('printedList', JSON.stringify(list));
@@ -114,17 +116,19 @@ export default {
     },
     changeModifyKind(state, { payload }) {
       if (!payload) throw new Error('changeModifyKind payload error!');
-      const { packageID, includeKind, orderID } = payload;
+      const { packageID, includeKind, orderID, UnPrintKindCount } = payload;
+      console.log(payload);
       if (!packageID || !includeKind || !orderID) throw new Error('changeModifyKind payload args error!');
       const _list = state.hasPrintedPackageList;
       const _t = _list.find(it => it.OrderID === orderID);
       if (_t) {
         const _targetPackage = _t.PackageList.find(packageItem => packageItem.PackageID === packageID);
         if (_targetPackage) {
-          _t.UnPrintKindCount = _t.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
+          _t.UnPrintKindCount = UnPrintKindCount;
           _t.IncludeKindCount = _t.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
           if (_t.IncludeKindCount > _t.KindCount) _t.IncludeKindCount = _t.KindCount;
           if (_t.IncludeKindCount < 0) _t.IncludeKindCount = 0;
+          if (_t.IncludeKindCount > _t.KindCount - _t.UnPrintKindCount) _t.IncludeKindCount = _t.KindCount - _t.UnPrintKindCount;
           _targetPackage.IncludeKindCount = includeKind;
           sessionStorage.setItem('printedList', JSON.stringify(_list));
         }
@@ -135,10 +139,11 @@ export default {
         if (_t2) {
           const _targetPackage = _t2.PackageList.find(packageItem => packageItem.PackageID === packageID);
           if (_targetPackage) {
-            _t2.UnPrintKindCount = _t2.UnPrintKindCount - (includeKind - _targetPackage.IncludeKindCount);
+            _t2.UnPrintKindCount = UnPrintKindCount;
             _t2.IncludeKindCount = _t2.IncludeKindCount + (includeKind - _targetPackage.IncludeKindCount);
             if (_t2.IncludeKindCount > _t2.KindCount) _t2.IncludeKindCount = _t2.KindCount;
             if (_t2.IncludeKindCount < 0) _t2.IncludeKindCount = 0;
+            if (_t2.IncludeKindCount > _t2.KindCount - _t2.UnPrintKindCount) _t2.IncludeKindCount = _t2.KindCount - _t2.UnPrintKindCount;
             _targetPackage.IncludeKindCount = includeKind;
             return {
               ...state,
@@ -182,15 +187,19 @@ export default {
       }
     },
     filterCanceledPackage(state, { payload }) {
-      const { packageID, orderID } = payload;
+      console.log(payload);
+      const { packageID, orderID, UnPrintKindCount } = payload;
       const _list = state.hasPrintedPackageList;
       const _t = _list.find(it => it.OrderID === orderID);
       if (_t) {
         const _targetPackage = _t.PackageList.find(_it => _it.PackageID === packageID);
-        _t.UnPrintKindCount = _t.UnPrintKindCount + _targetPackage.IncludeKindCount;
-        _t.IncludeKindCount = _t.IncludeKindCount - _targetPackage.IncludeKindCount;
-        if (_t.IncludeKindCount > _t.KindCount) _t.IncludeKindCount = _t.KindCount;
-        if (_t.IncludeKindCount < 0) _t.IncludeKindCount = 0;
+        if (!(_t.PackageList.filter(it => it.Status !== 255).length > _t.KindCount && _t.UnPrintKindCount === 0)) {
+          _t.UnPrintKindCount = UnPrintKindCount;
+          _t.IncludeKindCount = _t.IncludeKindCount - _targetPackage.IncludeKindCount;
+          if (_t.IncludeKindCount > _t.KindCount) _t.IncludeKindCount = _t.KindCount;
+          if (_t.IncludeKindCount < 0) _t.IncludeKindCount = 0;
+          if (_t.IncludeKindCount > _t.KindCount - _t.UnPrintKindCount) _t.IncludeKindCount = _t.KindCount - _t.UnPrintKindCount;
+        }
         _targetPackage.Status = 255;
         sessionStorage.setItem('printedList', JSON.stringify(_list));
       }
@@ -199,10 +208,13 @@ export default {
         const _t2 = printLabelSearchResult.find(it => it.OrderID === orderID);
         if (_t2) {
           const _targetPackage = _t2.PackageList.find(_it => _it.PackageID === packageID);
-          _t2.UnPrintKindCount = _t2.UnPrintKindCount + _targetPackage.IncludeKindCount;
-          _t2.IncludeKindCount = _t2.IncludeKindCount - _targetPackage.IncludeKindCount;
-          if (_t2.IncludeKindCount > _t2.KindCount) _t2.IncludeKindCount = _t2.KindCount;
-          if (_t2.IncludeKindCount < 0) _t2.IncludeKindCount = 0;
+          if (!(_t2.PackageList.filter(it => it.Status !== 255).length > _t2.KindCount && _t2.UnPrintKindCount === 0)) {
+            _t2.UnPrintKindCount = UnPrintKindCount;
+            _t2.IncludeKindCount = _t2.IncludeKindCount - _targetPackage.IncludeKindCount;
+            if (_t2.IncludeKindCount > _t2.KindCount) _t2.IncludeKindCount = _t2.KindCount;
+            if (_t2.IncludeKindCount < 0) _t2.IncludeKindCount = 0;
+            if (_t2.IncludeKindCount > _t2.KindCount - _t2.UnPrintKindCount) _t2.IncludeKindCount = _t2.KindCount - _t2.UnPrintKindCount;
+          }
           _targetPackage.Status = 255;
           return {
             ...state,
@@ -305,8 +317,9 @@ export default {
         res = yield call(api.getPrintPackageCancle, packageID);
         if (res.data.Status === 1000) {
           console.log(res.data.Data, '包裹撤销');
+          const _tempObj = { ...payload, UnPrintKindCount: res.data.Data }
           // 任务： 在数据仓库中修改相应包裹的打印记录 
-          yield put({ type: 'filterCanceledPackage', payload });
+          yield put({ type: 'filterCanceledPackage', payload: _tempObj });
           return true;
         }
       } catch (error) {
@@ -325,9 +338,9 @@ export default {
       try {
         res = yield call(api.getModifyKindChange, payload);
         if (res.data.Status === 1000) {
-          console.log(res, '更改款数成功');
+          const _tempObj = { ...payload, UnPrintKindCount: res.data.Data }
           // 更改款数成功 需修改仓库状态
-          yield put({ type: 'changeModifyKind', payload });
+          yield put({ type: 'changeModifyKind', payload: _tempObj });
           return true;
         }
         return false;
@@ -520,7 +533,7 @@ export default {
           
           
           _tempObj.IncludeCancled = true;
-          _tempObj.HaveInstored = false;
+          // _tempObj.HaveInstored = true;
           _tempObj.UsePrint = false;
           delete _tempObj.dateType;
           await dispatch({ type: 'fetchOperaLogList', payload: _tempObj });

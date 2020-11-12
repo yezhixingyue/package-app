@@ -24,6 +24,7 @@ export interface printInfo {
   ProductAmount: number,
   Unit: string,
   PackageList: packageItem[],
+  IncludeKindCount: number,
 }
 
 export interface printInfoType {
@@ -186,6 +187,14 @@ export default class PrintModel extends React.Component<IProps> {
         </li>
       </ul>
     )
+
+    let _includeKindCount = 0;
+    if (this.props.curPrintDiaInfo) {
+      this.props.curPrintDiaInfo.PackageList.filter(it => it.Status !== 255).forEach(it => {
+        _includeKindCount += it.IncludeKindCount;
+      })
+      if (_includeKindCount > this.props.curPrintDiaInfo.KindCount) _includeKindCount = this.props.curPrintDiaInfo.KindCount;
+    }
   
     this.contentHeader = (this.props.curPrintDiaInfo ? <div>
       <span className='is-font-16'>订单号：</span>
@@ -194,7 +203,7 @@ export default class PrintModel extends React.Component<IProps> {
       <span className='is-font-18'>
         （ {this.props.curPrintDiaInfo.ProductAmount + this.props.curPrintDiaInfo.Unit}/款 ），
         已打印 <i className='is-font-26 is-pink is-bold'>{this.props.curPrintDiaInfo.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹
-        （ 共包含 <i className='is-bold'>{+(this.props.curPrintDiaInfo.KindCount - this.props.curPrintDiaInfo.UnPrintKindCount).toFixed(0)}</i> 款 ）
+        （ 共包含 <i className='is-bold'>{_includeKindCount}</i> 款 ）
       </span>
     </div>
     : null)

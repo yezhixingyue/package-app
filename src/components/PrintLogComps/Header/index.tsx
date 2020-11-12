@@ -41,7 +41,7 @@ export default function index(props: IProps) {
   }
 
   const handleSelectChange = (val: number | string) => {
-    const _tempObj = { ...history.location.query, FactoryID: val };
+    const _tempObj = { ...history.location.query, FactoryID: val, Page: 1 };
     setPagePath(_tempObj);
   }
 
@@ -50,7 +50,7 @@ export default function index(props: IProps) {
       message.error('订单号或包裹号输入长度最少为9位!');
       return;
     }
-    const _tempObj = { ...history.location.query, KeyWords: props.KeyWords };
+    const _tempObj = { ...history.location.query, KeyWords: props.KeyWords, Page: 1 };
     props.changeOldKeywords(props.KeyWords);
     setPagePath(_tempObj);
   }
@@ -63,14 +63,14 @@ export default function index(props: IProps) {
 
   const handleDateChange = (date: { type: string, value: string | { First: string, Second: string } }) => {
     if (!date.value && date.type !== 'define') {
-      const _tempObj = { ...history.location.query, dateType: date.type };
+      const _tempObj = { ...history.location.query, dateType: date.type, Page: 1 };
       if (_tempObj.First) delete _tempObj.First;
       if (_tempObj.Second) delete _tempObj.Second;
       setPagePath(_tempObj);
     }
     if (typeof date.value === 'object' && date.type === 'define') {
       console.log(date.value);
-      const _tempObj = { ...history.location.query, dateType: date.type, ...date.value };
+      const _tempObj = { ...history.location.query, dateType: date.type, ...date.value, Page: 1 };
       setPagePath(_tempObj);
       return true;
     }

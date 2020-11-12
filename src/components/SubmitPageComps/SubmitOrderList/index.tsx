@@ -36,7 +36,7 @@ export default function ListComp(props: IProps) {
 
   const EmptyDom = (
     (props.FinishOrderCount === 0 && props.PackageCount === 0 && props.UnFinishOrderCount === 0)
-    ? <div className={`gray ${styles['empty-wrap']}`}><Empty description='该工厂暂无订单' /></div>
+    ? <div className={`gray ${styles['empty-wrap']}`}><Empty description={props.factoryID ? '该工厂暂无可入库订单' : '暂无可入库订单'} /></div>
     : null
   )
 
@@ -75,6 +75,7 @@ export default function ListComp(props: IProps) {
     const res = await api.getPrintPackageInStore(_tempObj);
     if (res.data.Status === 1000) {
       props.clearPrintedListAfterSubmitSuccess();
+      onModelCancel();
       model.showSuccess({
         title: '提交成功',
         onOk: () => {

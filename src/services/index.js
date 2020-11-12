@@ -45,7 +45,7 @@ const api = {
   },
   // POST /Api/PrintPackage/Excel   导出操作记录列表为Excel表格
   getPrintPackageExcel(data) {
-    return instance.post('/Api/PrintPackage/Excel', data);
+    return instance.post('/Api/PrintPackage/Excel', data, { responseType: 'arraybuffer' });
   },
 };
 

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Menu, Dropdown } from 'antd';
 import styles from './index.less';
-import { DownOutlined, PoweroffOutlined } from '@ant-design/icons';
+import { DownOutlined, PoweroffOutlined, UserOutlined } from '@ant-design/icons';
 import message from '../../../assets/js/utils/model';
 
 interface user {
   Mobile: string,
+  StaffName: string,
 }
 
 interface IProps {
@@ -40,8 +41,10 @@ export default function index(props: IProps) {
   );
   return (
     <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow>
-      <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-        <span>用户：</span><span>{props.userInfo && props.userInfo.Mobile}</span> <DownOutlined />
+      <a className={`ant-dropdown-link ${styles.username}`} onClick={e => e.preventDefault()}>
+        {/* <span>用户：</span> */}
+        <span><UserOutlined /></span>
+        <span>{props.userInfo && props.userInfo.StaffName}</span> <DownOutlined />
       </a>
     </Dropdown>
   )

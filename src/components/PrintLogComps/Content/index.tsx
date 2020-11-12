@@ -35,7 +35,7 @@ const setAndFilterDate = (obj:queryType) => {
       obj.PrintTime = getDate.YesterdayDate();
       break;
     case 'week': 
-      obj.PrintTime = getDate.TodayDate();
+      obj.PrintTime = getDate.curWeek();
       break;
     case 'month': 
       obj.PrintTime = getDate.curMonthDate();
@@ -89,7 +89,7 @@ export default function index(props: IProps) {
     setAndFilterDate(_tempObj);
     
     _tempObj.IncludeCancled = true;
-    _tempObj.HaveInstored = false;
+    // _tempObj.HaveInstored = true;
     _tempObj.UsePrint = false;
     delete _tempObj.dateType;
     delete _tempObj.Page;
@@ -108,7 +108,11 @@ export default function index(props: IProps) {
     })
   }
 
-  
+  const onShowSizeChange = (current: number, size: number) => {
+    console.log(current, size);
+    // const _tempObj = { ...history.location.query, Page: 1, PageSize:size  };
+    // setPagePath(_tempObj);
+  }
 
   return (
     <>
@@ -130,6 +134,7 @@ export default function index(props: IProps) {
               size='small'
               total={props.DataNumber}
               pageSize={props.PageSize}
+              onShowSizeChange={onShowSizeChange}
             />
             <div className={styles.info}>
               <span>共计 <i>{props.DataNumber}</i> 个订单， <i className='is-pink is-font-18'>{props.Message}</i> 个包裹</span>

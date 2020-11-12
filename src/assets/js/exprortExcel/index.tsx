@@ -6,13 +6,14 @@ import getDate from '@/assets/js/date';
 export default async function downLoadExcel(func: (arg0: any) => any, requestObj: any) {
   const res = await func(requestObj);
 
-  // console.log(res, config);
+  console.log(res);
   if (res.status !== 200) {
     model.showWarn({ title: '导出失败', msg: `[ 失败原因：${res.statusText} ]` });
     return;
   }
   const { data } = res;
-  const blobData = new Blob([data]);
+  const blobData = new Blob([data], { type: 'application/vnd.ms-excel' });
+  // const blobData = new Blob([data]);
   const _d = ConvertTimeFormat(new Date());
   let fileName = `打印包裹操作记录(截止至${_d}日).xls`;
   if (requestObj.PrintTime) {
@@ -31,7 +32,26 @@ export default async function downLoadExcel(func: (arg0: any) => any, requestObj
     }
   }
 
-  const url = window.URL.createObjectURL(blobData, { type: 'application/vnd.ms-excel' });
+  // const url = window.URL.createObjectURL(blobData);
+  // const link = document.createElement('a');
+  // link.style.display = 'none';
+  // link.href = url;
+
+  // link.setAttribute('download', `${fileName}`);
+  // document.body.appendChild(link);
+  // link.click();
+  // document.body.removeChild(link);
+
+  // link.onload = () => {
+  //   window.URL.revokeObjectURL(url);
+  // };
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    console.log('window.navigator');
+    window.navigator.msSaveOrOpenBlob(blobData, fileName);
+  } else {
+    console.log('window.navigator else');
+    const url = window.URL.createObjectURL(blobData);
+    console.log(url);
     const link = document.createElement('a');
     link.style.display = 'none';
     link.href = url;
@@ -44,21 +64,5 @@ export default async function downLoadExcel(func: (arg0: any) => any, requestObj
     link.onload = () => {
       window.URL.revokeObjectURL(url);
     };
-  // if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-  //   window.navigator.msSaveOrOpenBlob(blobData, fileName);
-  // } else {
-  //   const url = window.URL.createObjectURL(blobData, { type: 'application/vnd.ms-excel' });
-  //   const link = document.createElement('a');
-  //   link.style.display = 'none';
-  //   link.href = url;
-
-  //   link.setAttribute('download', `${fileName}`);
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-
-  //   link.onload = () => {
-  //     window.URL.revokeObjectURL(url);
-  //   };
-  // }
+  }
 }
