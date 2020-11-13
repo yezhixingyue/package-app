@@ -35,10 +35,20 @@ const setAndFilterDate = obj => {
   }
 }
 
+const handlePrint = () => {
+  const oPrintBtn = document.querySelector('.mp-print-btn-wrap .mp-print-btn');
+  if(oPrintBtn) {
+    oPrintBtn.click();
+  } else {
+    model.showWarn({ title: '抱歉，当前包裹号打印失败', msg: '订单号：[  ]，请补印' });
+  }
+}
+
 
 export default {
   state: {
     curPrintDiaInfo: null, // 当前请求到的要打印的订单信息
+    curPrintPackage: null, // 当前打印包裹信息
     curPrintDiaOnState: false, // 是否展示打印输入款数的弹窗
     hasPrintedPackageList: [], // 已打印的包裹列表
     printLabelSearchWords: '', // 标签打印页搜索关键字s
@@ -103,6 +113,21 @@ export default {
       return {
         ...state,
         hasPrintedPackageList: list,
+        curPrintDiaInfo: curOrderData,
+        curPrintPackage: packageData,
+      }
+    },
+    changeCurPrintOrderData(state, { payload }) {
+      return {
+        ...state,
+        curPrintDiaInfo: payload,
+      }
+    },
+    clearCurPrintInfo(state, { payload }) {
+      return {
+        ...state,
+        curPrintDiaInfo: null,
+        curPrintPackage: null,
       }
     },
     reStoreDataFromStorage(state, { payload }) { // 从缓存中取数据还原 || 或者是对其进行直接赋值null等操作
@@ -178,12 +203,14 @@ export default {
             ...state,
             printLabelSearchResult,
             hasPrintedPackageList: _list,
+            curPrintPackage: packageData,
           }
         }
       }
       return {
         ...state,
         hasPrintedPackageList: _list,
+        curPrintPackage: packageData,
       }
     },
     filterCanceledPackage(state, { payload }) {
@@ -300,7 +327,11 @@ export default {
       }
       if (res && res.data.Status === 1000) {
         // getPrintPackage  此处有2个东西需要处理 ： 1. 打印标签  2. 把返回的结果存入到仓库中(已完成)
+        console.log('输入框打印标签');
         yield put({ type: 'addItemDataToPackageList', payload: { packageData: res.data.Data, curOrderData }});
+        setTimeout(() => {
+          handlePrint();
+        }, 20);
         return res.data.Data;
       }
       return false;
@@ -356,13 +387,19 @@ export default {
         model.showWarn({ title: '重新打印失败', msg: error });
         return false;
       }
-      let res;
+      let resList;
       try {
-        res = yield call(api.ReprintPackage, packageID);
-        if (res.data.Status === 1000) {
-          console.log(res, '重新打印');
+        resList = yield call(api.getRePrintInfo, [orderID, packageID]);
+        const [orderRes, packageRes] = resList;
+        console.log(orderRes, packageRes, orderRes.data.Status, packageRes.data.Status, orderRes.data.Status === 1000 && packageRes.data.Status === 1000);
+        if (orderRes.data.Status === 1000 && packageRes.data.Status === 1000) {
+          console.log('重新打印');
           // 2个任务：  1. 重新打印标签  2. 在数据仓库中修改相应包裹的打印记录 
-          yield put({ type: 'changeRePrintData', payload: { orderID, packageData: res.data.Data }})
+          yield put({ type: 'changeCurPrintOrderData', payload: orderRes.data.Data});
+          yield put({ type: 'changeRePrintData', payload: { orderID, packageData: packageRes.data.Data }});
+          setTimeout(() => {
+            handlePrint();
+          }, 20);
           return true;
         }
         return false;
@@ -377,7 +414,7 @@ export default {
       try {
         res = yield call(api.getPrintPackageList, payload);
         if (res.data.Status === 1000) {
-          res.data.Data.forEach(it => it.PackageList.reverse());
+          // res.data.Data.forEach(it => it.PackageList.reverse());
           const _list = res.data.Data.reverse();
           yield put({ type: 'reStoreDataFromStorage', payload: _list });
           sessionStorage.setItem('printedList', JSON.stringify(_list));
@@ -401,9 +438,10 @@ export default {
       try {
         res = yield call(api.getPrintPackageList, payload);
         if (res.data.Status === 1000) {
-          res.data.Data.forEach(it => it.PackageList.reverse());
-          const _list = res.data.Data.reverse();
-          yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: _list } });
+          // res.data.Data.forEach(it => it.PackageList.reverse());
+          // const _list = res.data.Data.reverse();
+          // yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: _list } });
+          yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: res.data.Data } });
           return true;
         }
         return false;

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, message } from 'antd';
 import styles from './PrintLabelHeader.less';
 import CommonNumInp from '../../Common/CommonNumInp/CommonNumInp';
 import { debounce } from '@/assets/js/utils/throttle';
 
 interface IProps {
-  getPrintPackageOrderInfo: (orderId:string) => void,
+  getPrintPackageOrderInfo: (orderId: string) => void,
   handlePackageSearch: (keyword: string) => void,
   searchWords: string,
   setPrintLabelSearchWords: (keyword: string) => void,
@@ -13,6 +13,33 @@ interface IProps {
 
 export default function PrintLabelHeader(props: IProps) {
   const [inpOrderID, setInpOrderID] = useState('');
+
+  // useEffect(() => {
+  //   console.log('header inp effect');
+  //   var beforePrint = function () {
+  //     console.log('Functionality to run before printing.');
+  //   };
+
+  //   var afterPrint = function () {
+  //     console.log('Functionality to run after printing');
+  //   };
+
+  //   if (window.matchMedia) {
+  //     var mediaQueryList = window.matchMedia('print');
+  //     console.log(mediaQueryList);
+  //     // mediaQueryList.onchange = (e) => {
+  //     //   console.log(e);
+  //     // }
+  //     mediaQueryList.addListener(function (mql) {
+  //       console.log(mql);
+  //       if (mql.matches) {
+  //         beforePrint();
+  //       } else {
+  //         afterPrint();
+  //       }
+  //     });
+  //   }
+  // }, [])
 
   const onInpChange = (value: string) => {
     setInpOrderID(value.replace('.', ''));
@@ -45,7 +72,7 @@ export default function PrintLabelHeader(props: IProps) {
 
   return (
     <ul className={styles['print-page-header']}>
-      <li>
+      <li className='mp-print-label-header-inp-wrap'>
         <CommonNumInp value={inpOrderID} onPressEnter={debounce(handleLabelPrint, 100, true)} onChange={onInpChange} onFocus={onInpFocus} />
         <Button onClick={handleLabelPrint} type="primary">打印标签</Button>
       </li>

@@ -1,5 +1,6 @@
 import React from 'react'
 import PrintHeaderContainer from '../../components/PrintLabelComps/container/PrintHeaderContainer';
+import PrintComp from '@/components/print';
 
 export default function PrintLabelPageLayout(props: { children: React.ReactNode; }) {
   return (
@@ -9,6 +10,7 @@ export default function PrintLabelPageLayout(props: { children: React.ReactNode;
           <PrintHeaderContainer />
         </div>
       </header>
+      <PrintComp />
       { props.children }
     </section>
   )

@@ -21,6 +21,9 @@ const api = {
   ReprintPackage(packageID) { // PUT /Api/PrintPackage/Reprint  包裹重打
     return instance.put(`/Api/PrintPackage/Reprint?packageID=${packageID}`);
   },
+  getRePrintInfo([orderID, packageID]) {
+    return Promise.all([instance.get(`/Api/PrintPackage/OrderInfo?orderID=${orderID}`), instance.put(`/Api/PrintPackage/Reprint?packageID=${packageID}`)]);
+  },
   getModifyKindChange({ packageID, includeKind }) { // PUT /Api/PrintPackage/ModifyKind 款数修改
     return instance.put(`/Api/PrintPackage/ModifyKind?packageID=${packageID}&includeKind=${includeKind}`);
   },

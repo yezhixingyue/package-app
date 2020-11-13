@@ -14,7 +14,7 @@ const mapStateToProps = (state: { packageStore: { curPrintDiaInfo: printInfo; cu
 const mapDispatchToProps = (dispatch: (arg0: any) => any) => {
   return {
     closeModelAndInfo() {
-      dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaInfo: null, curPrintDiaOnState: false } });
+      dispatch({ type: 'packageStore/setCurPrintInfo', payload: { curPrintDiaOnState: false } });
     },
     async getPrintPackage({ OrderID, IncludeKindCount, curOrderData }:printInfoType) {
       const payload = {

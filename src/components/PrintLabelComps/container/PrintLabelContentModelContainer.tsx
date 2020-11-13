@@ -8,9 +8,9 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: { packageI
       const res = await dispatch({ type: 'packageStore/ReprintPackage', payload: { packageID, orderID } });
       if (res) {
         callback()
-        setTimeout(() => {
-          model.showSuccess({ title: `重新打印成功`, msg: `包裹号：[ ${packageID} ]` })
-        }, 150)
+        // setTimeout(() => {
+        //   model.showSuccess({ title: `重新打印成功`, msg: `包裹号：[ ${packageID} ]` })
+        // }, 150)
         // model.showSuccess({ title: `重新打印成功`, msg: `包裹号：[ ${packageID} ]`, onOk: () => callback() })
       }
     },
