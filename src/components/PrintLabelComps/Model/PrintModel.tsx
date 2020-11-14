@@ -156,22 +156,22 @@ export default class PrintModel extends React.Component<IProps> {
     }, 150)
   }
 
-  componentDidUpdate() {
-    if (this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount === 0) {
-      let key = true;
-      this.props.curPrintDiaInfo.PackageList.forEach(it => {
-        if (!key || it.Status === 255) return;
-        if (it.IncludeKindCount > 1) key = false;
-      })
-      console.log(this.props.curPrintDiaInfo.PackageList);
-      if (!key) {
-        model.showWarn({
-          title: '该订单存在合包，不允许再拆包!',
-        });
-        this.handleCancel();
-      }
-    }
-  }
+  // componentDidUpdate() {
+  //   if (this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount === 0) {
+  //     let key = true;
+  //     this.props.curPrintDiaInfo.PackageList.forEach(it => {
+  //       if (!key || it.Status === 255) return;
+  //       // if (it.IncludeKindCount > 1) key = false;
+  //     })
+  //     console.log(this.props.curPrintDiaInfo.PackageList);
+  //     if (!key) {
+  //       model.showWarn({
+  //         title: '该订单存在合包，不允许再拆包!',
+  //       });
+  //       this.handleCancel();
+  //     }
+  //   }
+  // }
 
   render() {
     this.title = (

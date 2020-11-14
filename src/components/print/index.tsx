@@ -10,27 +10,34 @@ let oInp = document.querySelector('li.mp-print-label-header-inp-wrap > input');
 class ComponentToPrint extends React.Component {
 
   render() {
-    if (!this.props.orderData || !this.props.packageDate || !this.props.userInfo) return <div style={{paddingTop: '5pt'}}>打印出现问题，数据获取失败</div>;
+    if (!this.props.orderData || !this.props.packageDate || !this.props.userInfo) {
+      return <ul style={{paddingTop: '5pt', fontSize: '20pt'}}>
+        <li>打印出现问题，数据获取失败</li>
+        <li>当前订单ID： {this.props.orderData ? this.props.orderData.OrderID : '未获取到订单信息'}</li>
+        <li>当前包裹ID： {this.props.packageDate ? this.props.packageDate.PackageID : '未获取到包裹信息'}</li>
+        <li></li>
+      </ul>;
+    }
     const { Consignee, Mobile, AddressDetail, ExpressArea } = this.props.orderData.Address.Address;
     const { RegionalName, CityName, CountyName } = ExpressArea;
     const address = `${RegionalName}${CityName}${CountyName}${AddressDetail}`;
-    const { ProductName, ProductClass, SizeString, ProductAmount, Content } = this.props.orderData;
+    const { ProductName, ProductClass, SizeString, ProductAmount, Content, KindCount } = this.props.orderData;
     const LastPrintTime = formartDate(this.props.packageDate.LastPrintTime);
     const Code = <QRCode value={`${this.props.packageDate.PackageID}`} size={245} />
     return (
-      <section className={styles.printWrap} style={{width: '210mm', height: '270mm', padding: 0, paddingTop: '4mm', margin: 0, boxSizing: 'border-box', textShadow: '0.01em 0.01em 0.1em #999999 !important'}}>
+      <section className={styles.printWrap} style={{width: '210mm', height: '270mm', padding: 0, paddingTop: '4mm', overflow: 'hidden', margin: 0, boxSizing: 'border-box', textShadow: '0.01em 0.01em 0.1em #999999 !important'}}>
         <div style={{width: '195mm', margin: '0 auto', border: '1pt solid #000'}}>
           {/* 上面双竖列部分 */}
           <div style={{display: 'flex', textAlign: 'center'}}>
             <ul style={{width: 'calc(126mm - 1pt)'}}>
               <li style={{fontSize: '90pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '30mm', lineHeight: '27mm'}}>{this.props.orderData.Address.Delivery.StationSN}</li>
-              <li style={{fontSize: '36pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '24mm', lineHeight: '21mm'}}>
+              <li style={{paddingLeft: '3mm' ,fontSize: '36pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '24mm', lineHeight: '21mm', overflow: 'hidden',textAlign: 'left'}}>
                 {this.props.orderData.Address.Delivery.StationName} - {this.props.orderData.Address.Delivery.DistrictSN}
               </li>
-              <li style={{fontSize: '30pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '21mm', lineHeight: '21mm'}}>
+              <li style={{paddingLeft: '3mm' ,fontSize: '30pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '21mm', lineHeight: '21mm', textAlign: 'left'}}>
                 {this.props.orderData.CustomerSN}
               </li>
-              <li style={{fontSize: '30pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '27mm', lineHeight: '24mm'}}>{this.props.orderData.CustomerName}</li>
+              <li style={{paddingLeft: '3mm' ,fontSize: '30pt', borderRight: '1pt solid #000', borderBottom: '1pt solid #000', height: '27mm', lineHeight: '24mm', textAlign: 'left'}}>{this.props.orderData.CustomerName}</li>
             </ul>
             <div style={{borderBottom: '1pt solid #000', width: 'calc(69mm - 1pt)'}}>
               <div style={{paddingTop: '3pt'}}>
@@ -53,7 +60,7 @@ class ComponentToPrint extends React.Component {
             </li>
             <li style={{height: '33mm', borderBottom: '1pt solid #000', borderTop: '1pt solid #000', lineHeight: '15mm', display: 'flex', textAlign: 'center', paddingTop: '0.5mm'}}>
               <div style={{width: '30mm', fontSize: '30pt'}}>
-                <p style={{ textAlign: 'center'}}>检:</p>
+                <p style={{ textAlign: 'center'}}>检</p>
                 <p>{this.props.userInfo.No}</p>
               </div>
               <div style={{backgroundColor: '#000', color: '#fff', fontSize: '33pt', width: '24mm', marginTop: '-1mm', paddingTop: '2mm'}}>
@@ -61,7 +68,7 @@ class ComponentToPrint extends React.Component {
               </div>
               <div style={{flex: '0 0 auto', width: '138mm', textAlign: 'left', paddingLeft: '3mm'}}>
                 <p style={{lineHeight: '16.5mm', fontSize: '27pt', whiteSpace: 'nowrap', overflow: 'hidden'}}>{ProductClass.Second} - {ProductName}</p>
-                <p style={{lineHeight: '13.5mm', fontSize: '21pt', whiteSpace: 'nowrap', overflow: 'hidden'}}>{`${('00' + this.props.packageDate.IncludeKindCount).slice(-3)}`} - {ProductAmount} - {SizeString}</p>
+                <p style={{lineHeight: '13.5mm', fontSize: '21pt', whiteSpace: 'nowrap', overflow: 'hidden'}}>{KindCount} - {ProductAmount} - {SizeString}</p>
               </div>
             </li>
             <li style={{height: '57mm', paddingTop: '3mm', paddingLeft: '3mm' ,textAlign: 'left'}}>

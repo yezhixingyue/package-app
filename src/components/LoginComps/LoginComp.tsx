@@ -25,7 +25,6 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
       password: pwd,
     }
     const res = await props.onLogin(_tempObj);
-    console.log(res);
     if (!res && res !== undefined) {
       form.setFieldsValue({ password: '' });
       // if (values.remember) {
@@ -72,8 +71,12 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
     const t = changedFields[0];
     const fieldName = t.name[0];
     const value = t.value;
-    if (fieldName === 'username' && value) form.setFieldsValue({ username: value.replace(/[^\d]+/g, '') });
-    else if (fieldName === 'password' && value) form.setFieldsValue({ password: value.replace(/\s+/g, '') });
+    if (fieldName === 'username') form.setFieldsValue({ password: '' });
+    if (fieldName === 'username' && value) {
+      form.setFieldsValue({ username: value.replace(/[^\d]+/g, '') });
+    } else if (fieldName === 'password' && value) {
+      form.setFieldsValue({ password: value.replace(/\s+/g, '') });
+    }
   }
 
   return (

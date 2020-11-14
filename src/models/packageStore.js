@@ -35,12 +35,12 @@ const setAndFilterDate = obj => {
   }
 }
 
-const handlePrint = () => {
+const handlePrint = (orderID, packageID) => {
   const oPrintBtn = document.querySelector('.mp-print-btn-wrap .mp-print-btn');
   if(oPrintBtn) {
     oPrintBtn.click();
   } else {
-    model.showWarn({ title: '抱歉，当前包裹号打印失败', msg: '订单号：[  ]，请补印' });
+    model.showWarn({ title: '抱歉，当前包裹标签打印失败', msg: `订单号：[ ${orderID} ]，包裹号：[ ${packageID} ]，请补印` });
   }
 }
 
@@ -330,7 +330,7 @@ export default {
         console.log('输入框打印标签');
         yield put({ type: 'addItemDataToPackageList', payload: { packageData: res.data.Data, curOrderData }});
         setTimeout(() => {
-          handlePrint();
+          handlePrint(OrderID, res.data.Data.PackageID);
         }, 20);
         return res.data.Data;
       }
@@ -361,8 +361,12 @@ export default {
     *getModifyKindChange({ payload }, { call, put }) { // 更改包裹款数
       if (!payload) return false;
       const { packageID, includeKind } = payload;
-      if (!packageID || !includeKind) {
+      if (!packageID || (!includeKind && includeKind !== 0 )) {
         model.showWarn({ title: '更改款数失败', msg: '信息不完整' });
+        return false;
+      }
+      if (includeKind === 0) {
+        model.showWarn({ title: '更改款数失败', msg: '款数不能为0' });
         return false;
       }
       let res;
@@ -384,7 +388,7 @@ export default {
       if (!payload) return false;
       const { packageID, orderID } = payload;
       if (!packageID) {
-        model.showWarn({ title: '重新打印失败', msg: error });
+        model.showWarn({ title: '重新打印失败', msg: '获取不到包裹号' });
         return false;
       }
       let resList;
@@ -398,7 +402,7 @@ export default {
           yield put({ type: 'changeCurPrintOrderData', payload: orderRes.data.Data});
           yield put({ type: 'changeRePrintData', payload: { orderID, packageData: packageRes.data.Data }});
           setTimeout(() => {
-            handlePrint();
+            handlePrint(orderID, packageID);
           }, 20);
           return true;
         }
@@ -542,7 +546,7 @@ export default {
           dispatch({ type: 'fetchFactoryList', payload: {} });
           await dispatch({ type: 'fetchSubmitList', payload: _tempObj });
           const oDom = document.getElementsByClassName('page-common-style-wrap')[0];
-          if (oDom) oDom.scrollTo(0, 0);
+          if (oDom && oDom.scrollTo) oDom.scrollTo(0, 0);
         }
         if (pathname === '/operatelog') {
           if (isEmpty(pathData.query)) {
@@ -576,7 +580,7 @@ export default {
           delete _tempObj.dateType;
           await dispatch({ type: 'fetchOperaLogList', payload: _tempObj });
           const oDom = document.getElementsByClassName('page-common-style-wrap')[0];
-          if (oDom) oDom.scrollTo(0, 0);
+          if (oDom && oDom.scrollTo) oDom.scrollTo(0, 0);
         }
       })
     }

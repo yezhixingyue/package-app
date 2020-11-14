@@ -1,4 +1,5 @@
 import { defineConfig } from 'umi';
+const IS_PROD = ["production", "prod"].includes(process.env.NODE_ENV);
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -16,9 +17,12 @@ export default defineConfig({
       changeOrigin: true, // 开启代理
     },
   },
+  targets: {
+    ie: 11,
+  },
   favicon: '/favicon.ico',
   publicPath: process.env.NODE_ENV === 'development' ? '/' : '/Print/',
-  // routes: [
-  //   { path: '/', component: '@/pages/index' },
-  // ],
+  extraBabelPlugins:[
+    IS_PROD?'transform-remove-console':""
+  ],
 });

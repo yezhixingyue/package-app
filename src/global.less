@@ -313,11 +313,14 @@ table {
   right: 0;
   bottom: 0;
   top: 60px;
-  overflow: auto;
+  overflow-y: scroll;
+  overflow: overlay;
+
   > header {
     width: 100%;
     background-color: #fff;
     margin-bottom: 25px;
+    min-width: 1250px;
     > .page-header-content {
       width: 1200px;
       margin: 0 auto;

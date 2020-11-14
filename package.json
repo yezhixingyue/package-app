@@ -24,6 +24,8 @@
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.24",
     "axios": "^0.21.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "compression-webpack-plugin": "^6.1.1",
     "js-base64": "^3.5.2",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
@@ -31,7 +33,9 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-to-print": "^2.11.0",
+    "terser-webpack-plugin": "^5.0.3",
     "umi": "^3.2.24",
+    "vendors": "^1.0.4",
     "yorkie": "^2.0.0"
   }
 }
