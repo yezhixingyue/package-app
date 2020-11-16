@@ -61,20 +61,21 @@ export default function index(props: IProps) {
 
   const onInpFocus = (e: { target: { select: () => any; }; }) => e.target.select();
 
-  const handleDateChange = (date: { type: string, value: string | { First: string, Second: string } }) => {
-    if (!date.value && date.type !== 'define') {
-      const _tempObj = { ...history.location.query, dateType: date.type, Page: 1 };
-      if (_tempObj.First) delete _tempObj.First;
-      if (_tempObj.Second) delete _tempObj.Second;
-      setPagePath(_tempObj);
-    }
-    if (typeof date.value === 'object' && date.type === 'define') {
-      console.log(date.value);
-      const _tempObj = { ...history.location.query, dateType: date.type, ...date.value, Page: 1 };
-      setPagePath(_tempObj);
-      return true;
-    }
-  }
+  const dateTypeList = [{ label: '所有', value: 'all' }, { label: '今日', value: 'today' }, { label: '昨日', value: 'yestday' }, { label: '本周', value: 'week' }, { label: '本月', value: 'month' }];
+
+  // const handleDateChange = (date: { type: string, value: string | { First: string, Second: string } }) => {
+  //   if (!date.value && date.type !== 'define') {
+  //     const _tempObj = { ...history.location.query, dateType: date.type, Page: 1 };
+  //     if (_tempObj.First) delete _tempObj.First;
+  //     if (_tempObj.Second) delete _tempObj.Second;
+  //     setPagePath(_tempObj);
+  //   }
+  //   if (typeof date.value === 'object' && date.type === 'define') {
+  //     const _tempObj = { ...history.location.query, dateType: date.type, ...date.value, Page: 1 };
+  //     setPagePath(_tempObj);
+  //     return true;
+  //   }
+  // }
 
   return (
     <ul className={styles['log-page-header-wrap']}>
@@ -86,9 +87,9 @@ export default function index(props: IProps) {
         {/* 此处时间筛选 */}
         <DateSelector
           dataType={props.dataType}
-          handleDateChange={handleDateChange}
           changeDateTime={props.changePrintTime}
           dateObj={props.dateObj}
+          dateTypeList={dateTypeList}
           />
       </li>
       <li>

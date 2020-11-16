@@ -37,14 +37,15 @@ export default function SubmitPageHeader(props: IProps) {
         <SelectComp value={props.factoryID} handleSelectChange={handleSelectChange} optionList={props.FactoryList} optionKeySet={{ label: 'FactoryName', value: 'FactoryID' }} />
       </div>
       <p className='is-black is-font-18'>
+        {props.UnFinishOrderCount > 0 && <span>当前共有 <i className='is-font-22 is-black is-bold'>{+props.FinishOrderCount + props.UnFinishOrderCount}</i> 个订单（<i>{props.PackageCount}</i> 个包裹），其中 </span>}
         {props.UnFinishOrderCount === 0 && props.PackageCount > 0 && props.FinishOrderCount > 0 && <i className={styles['success-img']}></i>}
-        { props.FinishOrderCount > 0 && <span><i className='is-font-22 is-black is-bold'>{props.FinishOrderCount}</i> 个订单已打印完毕</span> }
+        {props.UnFinishOrderCount === 0 && props.PackageCount > 0 && props.FinishOrderCount > 0 && <i>当前共有 </i>}
+        { props.FinishOrderCount > 0 && <span><i className='is-font-22 is-black is-bold'>{props.FinishOrderCount}</i> 个订单已完成</span> }
         { props.FinishOrderCount > 0 && props.UnFinishOrderCount > 0 && <span>，</span> }
         {
           props.UnFinishOrderCount > 0 && (
             <>
-              <span>剩余 <i className='is-font-22 is-pink'>{props.UnFinishOrderCount}</i> 个订单未完成，</span>
-              <span>共计 <i className='is-font-22 is-pink is-bold'>{props.PackageCount}</i> 个包裹，未完成订单列表如下：</span>
+              <span><i className='is-font-22 is-pink is-bold'>{props.UnFinishOrderCount}</i> 个订单未完成。未完成订单如下：</span>
             </>
           )
         }

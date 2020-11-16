@@ -34,9 +34,13 @@ export default {
       } catch (error) {
         return;
       }
+      console.log(resp);
       if (resp.data.Status === 1000) {
         sessionStorage.setItem('loginAuth', resp.data.Data);
         return true;
+      } else if ([8017, 8031, 8032].includes(resp.data.Status)) {
+        localStorage.removeItem('initialValues');
+        // window.location.reload();
       }
       return false;
     },

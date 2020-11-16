@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './index.less';
 import { Modal, DatePicker } from 'antd';
+import { history } from 'umi';
 import { SettingOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -14,10 +15,16 @@ interface PrintTimeType {
 interface IProps {
   dataType: string,
   dateObj: PrintTimeType,
-  handleDateChange: (val:{ type: string, value: string | PrintTimeType }) => undefined | true;
+  // handleDateChange: (val:{ type: string, value: string | PrintTimeType }) => undefined | true;
   changeDateTime: (val: object) => void,
+  dateTypeList: {label: string, value: string}[],
 }
 
+/**
+ * @description: 日期选择组件
+ * @param {*} datetype: 当前所选日期字段
+ * @return {*}
+ */
 export default function index(props: IProps) {
 
   const [state, setState] = useState({
@@ -25,10 +32,33 @@ export default function index(props: IProps) {
     visible: false,
   })
 
-  const _list = [{ label: '所有', value: 'all' }, { label: '今日', value: 'today' }, { label: '昨日', value: 'yestday' }, { label: '本周', value: 'week' }, { label: '本月', value: 'month' }];
+  const setPagePath = (obj: { [x: string]: any; }) => {
+    let str = '';
+    Object.keys(obj).forEach((key, index) => {
+      const _temp = `${key}=${obj[key]}`;
+      str += index === 0 ? `?${_temp}` : `&${_temp}`;
+    })
+    history.push(str);
+  }
+
+  const handleDateChange = (date: { type: string, value: string | { First: string, Second: string } }) => {
+    if (!date.value && date.type !== 'define') {
+      const _tempObj = { ...history.location.query, dateType: date.type, Page: 1 };
+      if (_tempObj.First) delete _tempObj.First;
+      if (_tempObj.Second) delete _tempObj.Second;
+      setPagePath(_tempObj);
+    }
+    if (typeof date.value === 'object' && date.type === 'define') {
+      const _tempObj = { ...history.location.query, dateType: date.type, ...date.value, Page: 1 };
+      setPagePath(_tempObj);
+      return true;
+    }
+  }
+
+  
   const handleClick = (val: string) => {
     if (val === props.dataType) return;
-    props.handleDateChange({ type: val, value: '' });
+    handleDateChange({ type: val, value: '' });
   }
   const handleDefineBtnClick = () => {
     setState({
@@ -44,7 +74,7 @@ export default function index(props: IProps) {
   }
   const handleModelOK = () => {
     if (!props.dateObj.First || !props.dateObj.Second) return;
-    const key = props.handleDateChange({ type: 'define', value: {
+    const key = handleDateChange({ type: 'define', value: {
       First: props.dateObj.First.slice(0, 10),
       Second: props.dateObj.Second.slice(0, 10),
     } });
@@ -57,7 +87,6 @@ export default function index(props: IProps) {
   }
   const handleDatePickerChange = (dates: [object, object], dateStrings: [string, string]) => {
     const [ First, Second ] = dateStrings;
-    console.log(First, Second);
     props.changeDateTime({First: First.slice(0, 10), Second: Second.slice(0, 10)});
   }
 
@@ -74,7 +103,7 @@ export default function index(props: IProps) {
       <span>打印时间：</span>
       <ul>
         {
-          _list.map(it => (<li key={it.value} className={ it.value === props.dataType ? styles.active : '' } onClick={() => handleClick(it.value)}>
+          props.dateTypeList.map(it => (<li key={it.value} className={ it.value === props.dataType ? styles.active : '' } onClick={() => handleClick(it.value)}>
             {it.label}
           </li>))
         }

@@ -9,7 +9,7 @@ import { history } from 'umi';
 export default (props: { onLogin: (arg0: any) => any; }) => {
   const [form] = Form.useForm();
 
-  const _info = localStorage.getItem('initialValues');
+  let _info = localStorage.getItem('initialValues');
   let loginInfo = {
     username: '',
     password: '',
@@ -19,24 +19,24 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
   
   const onFinish = async (values: any) => {
     if (!props.onLogin) return;
-    const pwd = Base64.encode(values.password);
-    const _tempObj = {
-      ...values,
-      password: pwd,
+    let _tempObj = { ...values };
+    if (!_info) {
+      const pwd = Base64.encode(values.password);
+      _tempObj = {
+        ...values,
+        password: pwd,
+      }
     }
     const res = await props.onLogin(_tempObj);
     if (!res && res !== undefined) {
       form.setFieldsValue({ password: '' });
-      // if (values.remember) {
-      //   localStorage.removeItem('initialValues');
-      // }
+      _info = null;
       return;
     }
-
     if (res) { // 登录成功
       history.push('/labelprint');
       if (values.remember) {
-        localStorage.setItem('initialValues', JSON.stringify(values));
+        localStorage.setItem('initialValues', JSON.stringify(_tempObj));
       } else if (_info) {
         localStorage.removeItem('initialValues');
       }

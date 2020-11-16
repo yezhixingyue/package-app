@@ -48,8 +48,8 @@ export default function PrintLabelContentModel(props: IProps) {
 
   const handleUserSettingNum = (val: string) => {
     let _val = val.replace('.', '').slice(0, 3);
-    if (props.curPrintDiaInfo && props.packageData && props.curPrintDiaInfo.UnPrintKindCount + props.packageData.IncludeKindCount < +_val) {
-      _val = `${props.curPrintDiaInfo.UnPrintKindCount + props.packageData.IncludeKindCount}`;
+    if (props.curPrintDiaInfo && props.packageData && +props.curPrintDiaInfo.UnPrintKindCount + +props.packageData.IncludeKindCount < +_val) {
+      _val = `${+props.curPrintDiaInfo.UnPrintKindCount + +props.packageData.IncludeKindCount}`;
     }
     setState({
       ...state,
@@ -135,7 +135,7 @@ export default function PrintLabelContentModel(props: IProps) {
       <span>当前包裹含</span>
       <CommonNumInp
         value={state.userSettingNum}
-        onChange={handleUserSettingNum} placeholder={'[ 1 - ' + (props.curPrintDiaInfo.UnPrintKindCount + props.packageData.IncludeKindCount) + ' ]款'}
+        onChange={handleUserSettingNum} placeholder={'[ 1 - ' + (+props.curPrintDiaInfo.UnPrintKindCount + +props.packageData.IncludeKindCount) + ' ]款'}
         onFocus={(e: { target: { select: () => any; }; }) => e.target.select()}
         />
       <span className='gray'>款</span>

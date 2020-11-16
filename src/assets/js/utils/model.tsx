@@ -10,13 +10,13 @@ const iconSuccess = (
   <span className='anticon success'></span>
 )
 
-export function showConfirm({title = '注意', msg = '', onOk = () => {}, onCancel = () => {}}) {
+export function showConfirm({title = '注意', msg = '', onOk = () => {}, onCancel = () => {}, okText = '确定'}) {
   Modal.confirm({
     title,
     icon: <>{iconWarn}</>,
     content: msg,
     className: 'mp-show-confirm-message-box',
-    okText: '确定',
+    okText,
     cancelText: '取消',
     maskClosable: true,
     onOk() {
