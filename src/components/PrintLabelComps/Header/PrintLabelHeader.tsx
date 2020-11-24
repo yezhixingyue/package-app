@@ -28,7 +28,6 @@ export default function PrintLabelHeader(props: IProps) {
 
   const onInpChange = (value: string) => {
     const _str = value.replace('.', '');
-    console.log(_str);
     if (!_str) {
       setState({
         ...state,

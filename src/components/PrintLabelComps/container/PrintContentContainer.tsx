@@ -14,6 +14,9 @@ export interface PackageItemProps {
   LastPrintTime: string,
   OrderID: number,
   Status: number,
+  Printer: {
+    ID: string,
+  }
 }
 
 export interface OrderItemProps {
@@ -42,12 +45,19 @@ export interface OrderItemProps {
 interface iState {
   packageStore: {
     hasPrintedPackageList: OrderItemProps[],
+  },
+  loginInfo: {
+    userDetailInfo: {
+      StaffID: string,
+      StaffName: string,
+    } | null
   }
 }
 
 const mapStateToProps = (state:iState) => {
   return {
     hasPrintedPackageList: state.packageStore.hasPrintedPackageList,
+    user: state.loginInfo.userDetailInfo,
   }
 }
 

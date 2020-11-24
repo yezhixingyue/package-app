@@ -21,7 +21,7 @@ class ComponentToPrint extends React.Component {
     const { Consignee, Mobile, AddressDetail, ExpressArea } = this.props.orderData.Address.Address;
     const { RegionalName, CityName, CountyName } = ExpressArea;
     const address = `${RegionalName}${CityName}${CountyName}${AddressDetail}`;
-    const { ProductName, ProductClass, SizeString, ProductAmount, Content, KindCount } = this.props.orderData;
+    const { ProductName, ProductClass, SizeString, ProductAmount, Content, KindCount, Unit } = this.props.orderData;
     const LastPrintTime = formartDate(this.props.packageDate.LastPrintTime);
     const Code = <QRCode value={`${this.props.packageDate.PackageID}`} size={245} />
     return (
@@ -68,7 +68,7 @@ class ComponentToPrint extends React.Component {
               </div>
               <div style={{flex: '0 0 auto', width: '138mm', textAlign: 'left', paddingLeft: '3mm'}}>
                 <p style={{lineHeight: '16.5mm', fontSize: '27pt', whiteSpace: 'nowrap', overflow: 'hidden'}}>{ProductClass.Second} - {ProductName}</p>
-                <p style={{lineHeight: '13.5mm', fontSize: '21pt', whiteSpace: 'nowrap', overflow: 'hidden'}}>{KindCount} - {ProductAmount} - {SizeString}</p>
+                <p style={{lineHeight: '13.5mm', fontSize: '21pt', whiteSpace: 'nowrap', overflow: 'hidden'}}>{KindCount}款 - {ProductAmount}{Unit} - {SizeString}</p>
               </div>
             </li>
             <li style={{height: '57mm', paddingTop: '3mm', paddingLeft: '3mm' ,textAlign: 'left'}}>

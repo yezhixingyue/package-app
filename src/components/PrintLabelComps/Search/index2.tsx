@@ -7,6 +7,7 @@ import { formartDate } from '@/assets/js/utils/utils';
 
 interface IProps {
   searchList: null | OrderItemProps[],
+  user: any,
   jumpToListPage: () => void,
 }
 
@@ -92,15 +93,31 @@ export default function LabelPrintPageSearchIndex(props: IProps) {
                   <span>含 <i>{subPackage.IncludeKindCount}</i> 款</span>
                 </div>
                 <div>
-                  <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+                  {
+                    subPackage.Status !== 200 && props.user && subPackage.Printer.ID === props.user.StaffID && (
+                      subPackage.PrintRecords.length === 1
+                       ? <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+                       : (<span>共打印 <i>{subPackage.PrintRecords.length}</i> 次<em className='is-font-14 gray'>（重新打印 <i>{subPackage.PrintRecords.length - 1}</i> 次）</em></span>)
+                    )
+                  }
+                  {
+                    subPackage.Status === 200 && props.user && <span className='is-success'>已入库</span>
+                  }
+                  {
+                    subPackage.Status === 0 && props.user && subPackage.Printer.ID !== props.user.StaffID && <span className='gray'>打印人： {props.user.StaffName}</span>
+                  }
                 </div>
-                <div>
-                  <span>最后打印时间：</span>
-                  <span>{formartDate(subPackage.LastPrintTime)}</span>
-                </div>
+                {
+                  subPackage.Status !== 200 && subPackage.Printer.ID === props.user.StaffID && (
+                    <div>
+                      <span>最后打印时间：</span>
+                      <span>{formartDate(subPackage.LastPrintTime)}</span>
+                    </div>
+                  )
+                }
                 <div>
                   {
-                    subPackage.Status !== 255 ? <span onClick={() => onOperationPrintOrder(subPackage, it)}>操作</span> : <i className='is-cancel'>已撤销</i>
+                    subPackage.Status !== 255 ? subPackage.Status === 0 && subPackage.Printer.ID === props.user.StaffID ? <span onClick={() => onOperationPrintOrder(subPackage, it)}>操作</span> : '' : <i className='is-cancel'>已撤销</i>
                   }
                 </div>
               </li>))}
@@ -114,7 +131,7 @@ export default function LabelPrintPageSearchIndex(props: IProps) {
       }
       {
         (!props.searchList || props.searchList.length === 0) && ( <p>
-          { props.searchList && <span>搜索不到该订单，请检查输入的订单号或包裹号是否正确</span> }
+          { props.searchList && <span>搜索不到该订单，造成这种情况有3种可能：1. 该订单未被当前用户打印过，2. 该订单已入库，3. 输入的订单号或包裹号不正确</span> }
         </p> )
       }
       <PrintLabelContentModelContainer {...state} setModelSwitch={setModelSwitch} clearModelData={clearModelData} />

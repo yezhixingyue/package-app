@@ -216,6 +216,7 @@ export default class PrintModel extends React.Component<IProps> {
         closeIcon={<i className='iconfont icon-cha'></i>}
         footer={null}
         destroyOnClose
+        centered
         maskClosable={false}
         width={this.props.curPrintDiaInfo && this.props.curPrintDiaInfo.UnPrintKindCount > 1 && !this.state.isUserSettingKind ? 1200 : 1000}
         wrapClassName={styles['print-model-wrap']}

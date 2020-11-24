@@ -29,6 +29,7 @@ export interface PackageItemProps {
  * @interface OrderItemProps
  */
 export interface OrderItemProps {
+  InstoredKindCount: number;
   OrderID: number,
   Factory: {
     ID: number,

@@ -55,7 +55,12 @@ export default function OrderItem(prop: IProps) {
               <span>含 <i>{subPackage.IncludeKindCount}</i> 款</span>
             </div>
             <div>
-              <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+              {
+                subPackage.PrintRecords.length === 1
+                 ? <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+                 : (<span>共打印 <i>{subPackage.PrintRecords.length}</i> 次<em className='is-font-13 gray'>（重新打印 <i>{subPackage.PrintRecords.length - 1}</i> 次）</em></span>)
+              }
+              
             </div>
             <div>
               {subPackage.Status === 200 && <span className='is-success'>已入库</span> }

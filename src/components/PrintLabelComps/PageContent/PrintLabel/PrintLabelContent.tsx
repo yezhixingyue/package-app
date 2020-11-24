@@ -7,7 +7,11 @@ import PrintLabelContentModelContainer from '../../container/PrintLabelContentMo
 
 interface IProps {
   hasPrintedPackageList: OrderItemProps[],
-  getPrintedList: () => void;
+  getPrintedList: () => void,
+  user: {
+    StaffID: string,
+    StaffName: string,
+  } | null,
 }
 interface IState {
   visible: boolean,
@@ -52,7 +56,7 @@ export default function PrintLabelContent(props: IProps) {
     const _time = formartDate(LastPrintTime);
     const _stamp = new Date(_time).getTime();
     const _difference = Date.now() - _stamp;
-    return _difference > 3 * 60 * 60 * 1000 ? _time : '刚刚打印';
+    return _difference > 3 * 60 * 60 * 1000 ? _time : _difference > 30 * 60 * 1000 ? '最后打印' : '刚刚打印';
   }
 
   const items = props.hasPrintedPackageList && props.hasPrintedPackageList.length > 0 ? props.hasPrintedPackageList.map((it, index) => { // 每个订单项目
@@ -93,15 +97,35 @@ export default function PrintLabelContent(props: IProps) {
             <span>含 <i>{subPackage.IncludeKindCount}</i> 款</span>
           </div>
           <div>
-            <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+            {
+              subPackage.Status !== 200 && props.user && subPackage.Printer.ID === props.user.StaffID && (
+                subPackage.PrintRecords.length === 1
+                 ? <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+                 : (<span>共打印 <i>{subPackage.PrintRecords.length}</i> 次<em className='is-font-14 gray'>（重新打印 <i>{subPackage.PrintRecords.length - 1}</i> 次）</em></span>)
+              )
+            }
+            {
+              subPackage.Status === 200 && props.user && <span className='is-success'>已入库</span>
+            }
+            {
+              subPackage.Status === 0 && props.user && subPackage.Printer.ID !== props.user.StaffID && <span className='gray'>打印人： {props.user.StaffName}</span>
+            }
           </div>
-          <div>
-            <span>最后打印时间：</span>
-            <span>{index === 0 && subIndex === 0 ? getTimeText(subPackage.LastPrintTime) : formartDate(subPackage.LastPrintTime)}</span>
-          </div>
-          <div>
-            {index === 0 && subIndex === 0 ? <Button type="primary" onClick={() => onOperationPrintOrder(subPackage, it)}>操作</Button> : null}
-          </div>
+          {
+            subPackage.Status === 0 && props.user && subPackage.Printer.ID === props.user.StaffID
+              ? <div>
+                  <span>最后打印时间：</span>
+                  <span>{index === 0 && subIndex === 0 ? getTimeText(subPackage.LastPrintTime) : formartDate(subPackage.LastPrintTime)}</span>
+                </div>
+              : <div></div>
+          }
+          {
+            subPackage.Status === 0 && props.user && subPackage.Printer.ID === props.user.StaffID && (
+              <div>
+                {index === 0 && subIndex === 0  ? <Button type="primary" onClick={() => onOperationPrintOrder(subPackage, it)}>操作</Button> : null}
+              </div>
+            )
+          }
         </li>))}
       </ul>
       <footer className='is-font-14'>

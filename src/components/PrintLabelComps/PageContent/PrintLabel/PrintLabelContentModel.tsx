@@ -112,7 +112,16 @@ export default function PrintLabelContentModel(props: IProps) {
     </li>
     <li>
       <div>含 <i className={state.modelType && 'is-pink is-bold is-font-20'}>{props.packageData.IncludeKindCount}</i> 款 </div>
-      <div> （共打印 <i className={state.modelType && 'is-black'}>{props.packageData.PrintRecords.length}</i> 次）</div>
+      <div>
+        {
+          props.packageData.PrintRecords.length === 1
+           ? <>（共打印 <i className={state.modelType && 'is-black'}>{props.packageData.PrintRecords.length}</i> 次）</>
+           : <>
+              （共打印 <i className={state.modelType && 'is-black'}>{props.packageData.PrintRecords.length}</i> 次<em className='gray is-font-14'>（重新打印 <i className={state.modelType && 'is-black'}>{props.packageData.PrintRecords.length - 1}</i> 次）</em> ）
+             </>
+        }
+        
+      </div>
     </li>
     <li>
       打印时间：{formartDate(props.packageData.LastPrintTime)}

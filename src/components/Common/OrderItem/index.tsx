@@ -47,7 +47,11 @@ export default function OrderItem(prop: IProps) {
             <span>含 <i>{subPackage.IncludeKindCount}</i> 款</span>
           </div>
           <div>
-            <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+            {
+                subPackage.PrintRecords.length === 1
+                 ? <span>共打印 <i>{subPackage.PrintRecords.length}</i> 次</span>
+                 : (<span>共打印 <i>{subPackage.PrintRecords.length}</i> 次<em className='gray is-font-13'>（重新打印 <i>{subPackage.PrintRecords.length - 1}</i> 次）</em></span>)
+              }
           </div>
           <div>
             <span>最后打印时间：</span>
@@ -62,6 +66,7 @@ export default function OrderItem(prop: IProps) {
         </li>))}
       </ul>
       <footer className='is-font-14'>
+        {prop.orderData.InstoredKindCount > 0 && <span>除去已入库 {prop.orderData.InstoredKindCount} 款，</span>}
         <span>已打印 <i className={'is-font-16 is-bold'}>{prop.orderData.PackageList.filter(it => it.Status !== 255).length}</i> 个包裹（含 {prop.orderData.IncludeKindCount} 款），
               剩余 <i className={'is-font-16 is-pink'}>{prop.orderData.UnPrintKindCount}</i> 款未出标签 </span>
       </footer>

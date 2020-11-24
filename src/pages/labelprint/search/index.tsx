@@ -13,9 +13,10 @@ function index() {
 }
 
 
-const mapStateToProps = (state: { packageStore: { printLabelSearchResult: null | OrderItemProps[] }; }) => {
+const mapStateToProps = (state: { packageStore: { printLabelSearchResult: null | OrderItemProps[] }, loginInfo: { userDetailInfo: object } }) => {
   return {
     searchList: state.packageStore.printLabelSearchResult,
+    user: state.loginInfo.userDetailInfo,
   }
 }
 

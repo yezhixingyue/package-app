@@ -9,6 +9,8 @@ import { history } from 'umi';
 export default (props: { onLogin: (arg0: any) => any; }) => {
   const [form] = Form.useForm();
 
+  const [state, setstate] = useState(false)
+
   let _info = localStorage.getItem('initialValues');
   let loginInfo = {
     username: '',
@@ -20,7 +22,7 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
   const onFinish = async (values: any) => {
     if (!props.onLogin) return;
     let _tempObj = { ...values };
-    if (!_info) {
+    if (!_info || state) {
       const pwd = Base64.encode(values.password);
       _tempObj = {
         ...values,
@@ -28,6 +30,7 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
       }
     }
     const res = await props.onLogin(_tempObj);
+    setstate(false);
     if (!res && res !== undefined) {
       form.setFieldsValue({ password: '' });
       _info = null;
@@ -71,6 +74,8 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
     const t = changedFields[0];
     const fieldName = t.name[0];
     const value = t.value;
+    if (fieldName === 'username' && value === loginInfo.username) return;
+    setstate(true);
     if (fieldName === 'username') form.setFieldsValue({ password: '' });
     if (fieldName === 'username' && value) {
       form.setFieldsValue({ username: value.replace(/[^\d]+/g, '') });

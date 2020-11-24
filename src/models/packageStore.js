@@ -100,16 +100,30 @@ export default {
     addItemDataToPackageList(state, { payload }) {
        //大于0的情况， 需要判断： 1.原列表中是否有该订单 如果是则添加混合在一起  2.如果没有则整体添加到列表中
        console.log(payload);
-      const { packageData, curOrderData } = payload;
+      const { packageData, curOrderData, user } = payload;
       let list = state.hasPrintedPackageList.filter(it => it.OrderID !== curOrderData.OrderID);
       curOrderData.PackageList.push(packageData);
       curOrderData.PackageList.reverse();
       curOrderData.UnPrintKindCount = packageData.UnPrintKindCount;
       curOrderData.IncludeKindCount = curOrderData.IncludeKindCount + packageData.IncludeKindCount > curOrderData.KindCount ? curOrderData.KindCount : curOrderData.IncludeKindCount + packageData.IncludeKindCount;
       if (curOrderData.IncludeKindCount > curOrderData.KindCount - curOrderData.UnPrintKindCount) curOrderData.IncludeKindCount = curOrderData.KindCount - curOrderData.UnPrintKindCount;
-      list.unshift(curOrderData);
+      list = [curOrderData];
+
+      
+      // const _list = res.data.Data.reverse();
+      list.forEach(it => {
+        const canList = [];
+        const otherList = [];
+        const enteredList = [];
+        it.PackageList.forEach(it2 => {
+          if (it2.Status === 0 && it2.Printer.ID === user.StaffID) canList.push(it2);
+          else if (it2.Status === 200) enteredList.push(it2);
+          else otherList.push(it2);
+        })
+        it.PackageList = [...canList, ...otherList, ...enteredList]
+      })
       // 此处保存缓存
-      sessionStorage.setItem('printedList', JSON.stringify(list));
+      // sessionStorage.setItem('printedList', JSON.stringify(list));
       return {
         ...state,
         hasPrintedPackageList: list,
@@ -316,7 +330,7 @@ export default {
       }
       return false;
     },
-    *getPrintPackage({ payload }, { call, put }) { // 获取打印标签信息
+    *getPrintPackage({ payload }, { call, put, select }) { // 获取打印标签信息
       let res;
       const { OrderID, IncludeKindCount, curOrderData } = payload;
       try {
@@ -328,10 +342,12 @@ export default {
       if (res && res.data.Status === 1000) {
         // getPrintPackage  此处有2个东西需要处理 ： 1. 打印标签  2. 把返回的结果存入到仓库中(已完成)
         console.log('输入框打印标签');
-        yield put({ type: 'addItemDataToPackageList', payload: { packageData: res.data.Data, curOrderData }});
+        const user = yield select(state => state.loginInfo.userDetailInfo)
+        const _tempObj = { ...res.data.Data, Printer: {ID: user.StaffID, Name: user.StaffName} };
+        yield put({ type: 'addItemDataToPackageList', payload: { packageData: _tempObj, curOrderData, user }});
         setTimeout(() => {
           handlePrint(OrderID, res.data.Data.PackageID);
-        }, 20);
+        }, 100);
         return res.data.Data;
       }
       return false;
@@ -384,7 +400,7 @@ export default {
         return false;
       }
     },
-    *ReprintPackage({ payload }, { call, put }) { // 重新打印标签
+    *ReprintPackage({ payload }, { call, put, select }) { // 重新打印标签
       if (!payload) return false;
       const { packageID, orderID } = payload;
       if (!packageID) {
@@ -395,15 +411,16 @@ export default {
       try {
         resList = yield call(api.getRePrintInfo, [orderID, packageID]);
         const [orderRes, packageRes] = resList;
-        console.log(orderRes, packageRes, orderRes.data.Status, packageRes.data.Status, orderRes.data.Status === 1000 && packageRes.data.Status === 1000);
         if (orderRes.data.Status === 1000 && packageRes.data.Status === 1000) {
           console.log('重新打印');
           // 2个任务：  1. 重新打印标签  2. 在数据仓库中修改相应包裹的打印记录 
+          const user = yield select(state => state.loginInfo.userDetailInfo)
+          const _tempObj = { ...packageRes.data.Data, Printer: {ID: user.StaffID, Name: user.StaffName} }
           yield put({ type: 'changeCurPrintOrderData', payload: orderRes.data.Data});
-          yield put({ type: 'changeRePrintData', payload: { orderID, packageData: packageRes.data.Data }});
+          yield put({ type: 'changeRePrintData', payload: { orderID, packageData: _tempObj }});
           setTimeout(() => {
             handlePrint(orderID, packageID);
-          }, 20);
+          }, 100);
           return true;
         }
         return false;
@@ -412,16 +429,29 @@ export default {
       }
     },
     *getPrintedList({ payload }, { call, put, select }) { // 获取已打印包裹列表
-      const printedList = yield select(state => state.packageStore.hasPrintedPackageList);
-      if (printedList && printedList.length > 0) return;
+      // const printedList = yield select(state => state.packageStore.hasPrintedPackageList);
+      // if (printedList && printedList.length > 0) return;
       let res;
       try {
         res = yield call(api.getPrintPackageList, payload);
         if (res.data.Status === 1000) {
           // res.data.Data.forEach(it => it.PackageList.reverse());
+          const user = yield select(state => state.loginInfo.userDetailInfo);
           const _list = res.data.Data.reverse();
+          _list.forEach(it => {
+            console.log(it);
+            const canList = [];
+            const otherList = [];
+            const enteredList = [];
+            it.PackageList.forEach(it2 => {
+              if (it2.Status === 0 && it2.Printer.ID === user.StaffID) canList.push(it2);
+              else if (it2.Status === 200) enteredList.push(it2);
+              else otherList.push(it2);
+            })
+            it.PackageList = [...canList, ...otherList, ...enteredList]
+          })
           yield put({ type: 'reStoreDataFromStorage', payload: _list });
-          sessionStorage.setItem('printedList', JSON.stringify(_list));
+          // sessionStorage.setItem('printedList', JSON.stringify(_list));
           return true;
         }
         return false;
@@ -445,7 +475,23 @@ export default {
           // res.data.Data.forEach(it => it.PackageList.reverse());
           // const _list = res.data.Data.reverse();
           // yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: _list } });
-          yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: res.data.Data } });
+
+          const user = yield select(state => state.loginInfo.userDetailInfo);
+          const _list = res.data.Data;
+          _list.forEach(it => {
+            console.log(it);
+            const canList = [];
+            const otherList = [];
+            const enteredList = [];
+            it.PackageList.forEach(it2 => {
+              if (it2.Status === 0 && it2.Printer.ID === user.StaffID) canList.push(it2);
+              else if (it2.Status === 200) enteredList.push(it2);
+              else otherList.push(it2);
+            })
+            it.PackageList = [...canList, ...otherList, ...enteredList]
+          })
+
+          yield put({ type: 'setPrintLabelSearchResult', payload: { printLabelSearchResult: _list } });
           return true;
         }
         return false;
