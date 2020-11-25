@@ -124,7 +124,7 @@ export default function index(props: IProps) {
       {
         props.logList.length > 0 && <Affix offsetBottom={0}>
           <div className={styles.footer}>
-            {props.DataNumber < props.PageSize && <span></span>}
+            {props.DataNumber <= props.PageSize && <span></span>}
             <Pagination
               hideOnSinglePage
               className={styles.pagination}

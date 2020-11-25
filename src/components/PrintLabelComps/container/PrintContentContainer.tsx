@@ -16,6 +16,7 @@ export interface PackageItemProps {
   Status: number,
   Printer: {
     ID: string,
+    Name: string,
   }
 }
 

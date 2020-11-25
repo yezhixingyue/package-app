@@ -144,7 +144,7 @@ export default function PrintLabelContentModel(props: IProps) {
       <span>当前包裹含</span>
       <CommonNumInp
         value={state.userSettingNum}
-        onChange={handleUserSettingNum} placeholder={'[ 1 - ' + (+props.curPrintDiaInfo.UnPrintKindCount + +props.packageData.IncludeKindCount) + ' ]款'}
+        onChange={handleUserSettingNum} placeholder={'[ ' + (+props.curPrintDiaInfo.UnPrintKindCount + +props.packageData.IncludeKindCount > 0 ? 1 : 0) + ' - ' + (+props.curPrintDiaInfo.UnPrintKindCount + +props.packageData.IncludeKindCount) + ' ]款'}
         onFocus={(e: { target: { select: () => any; }; }) => e.target.select()}
         />
       <span className='gray'>款</span>

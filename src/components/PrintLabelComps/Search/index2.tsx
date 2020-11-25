@@ -104,7 +104,7 @@ export default function LabelPrintPageSearchIndex(props: IProps) {
                     subPackage.Status === 200 && props.user && <span className='is-success'>已入库</span>
                   }
                   {
-                    subPackage.Status === 0 && props.user && subPackage.Printer.ID !== props.user.StaffID && <span className='gray'>打印人： {props.user.StaffName}</span>
+                    subPackage.Status === 0 && props.user && subPackage.Printer.ID !== props.user.StaffID && <span className='gray'>打印人： {subPackage.Printer.Name}</span>
                   }
                 </div>
                 {

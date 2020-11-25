@@ -82,7 +82,7 @@ export default function OrderItem(prop: IProps) {
       </ul>
       <footer className='is-font-14'>
         {_unShowPackageIDList.length > 0 ? <div className='is-gray'><span>已撤包：</span><span>{_unShowPackageIDList.join('、')}</span></div> : <div></div> }
-        <span>共 <i className={'is-font-16 is-bold'}>{_showPackageList.length}</i> 个包裹</span>
+        <span>共 <i className={'is-font-16 is-bold'}>{_showPackageList.length}</i> 个包裹， 剩余 <i className='is-font-16 is-bold is-pink'>{prop.orderData.UnPrintKindCount}</i> 款未出标签</span>
       </footer>
     </section>
   )

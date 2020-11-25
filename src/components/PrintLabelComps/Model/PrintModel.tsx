@@ -270,7 +270,7 @@ export default class PrintModel extends React.Component<IProps> {
                 <span>当前包裹含</span>
                 <CommonNumInp
                   value={this.state.userSettingNum}
-                  onChange={this.handleUserSettingNum} placeholder={'请输入款数: [ 1 - ' + this.props.curPrintDiaInfo.UnPrintKindCount + ' ]款'}
+                  onChange={this.handleUserSettingNum} placeholder={'请输入款数: [ ' + (this.props.curPrintDiaInfo.UnPrintKindCount > 0 ? 1 : 0) + ' - ' + this.props.curPrintDiaInfo.UnPrintKindCount + ' ]款'}
                   onPressEnter={this.handleUserDefineSubmit}
                  />
                 <span className='gray'>款</span>
