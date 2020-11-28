@@ -7,13 +7,19 @@ import RightDropDown from '../container/LayoutContainers/RightDropDownContainer'
 import MaskContainer from '@/components/container/MaskContainer';
 import zhCN from 'antd/lib/locale/zh_CN';
 import { ConfigProvider } from 'antd';
+import isChrome from '@/assets/js/utils/isChrome';
 
+const _isChrome = isChrome();
+if(!_isChrome) {
+  window.alert('请使用谷歌浏览器');
+  // window.open('https://www.google.cn/intl/zh-CN/chrome/');
+}
 
 
 
 export default function header(props: { location: { pathname: string; }; children: any; userDetailInfo: object, getUserInfo: Function }) {
+  if (!_isChrome) return <div style={{width: '100vw'}}> <div style={{margin: '118px auto', width: 500}}>系统不支持当前浏览器，请使用谷歌浏览器打开,  <a href="https://www.google.cn/intl/zh-CN/chrome/" target='_blank'> 点击跳转下载页面</a></div> </div>
   if (props.location.pathname === '/login') return <>{props.children} <MaskContainer>登录中...</MaskContainer></>
-
   const onLogoClick = () => {
     history.push('/labelprint');
   }

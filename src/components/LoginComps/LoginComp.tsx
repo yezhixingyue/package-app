@@ -70,17 +70,33 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
   }
 
   const onFieldsChange = (changedFields: any[], allFields: any[]) => {
-    if (changedFields.length === 0) return;
-    const t = changedFields[0];
-    const fieldName = t.name[0];
-    const value = t.value;
-    if (fieldName === 'username' && value === loginInfo.username) return;
-    setstate(true);
-    if (fieldName === 'username') form.setFieldsValue({ password: '' });
-    if (fieldName === 'username' && value) {
-      form.setFieldsValue({ username: value.replace(/[^\d]+/g, '') });
-    } else if (fieldName === 'password' && value) {
-      form.setFieldsValue({ password: value.replace(/\s+/g, '') });
+    // if (changedFields.length === 0) return;
+    // const t = changedFields[0];
+    // const fieldName = t.name[0];
+    // const value = t.value;
+    // if (fieldName === 'username' && value === loginInfo.username) return;
+    // setstate(true);
+    // if (fieldName === 'username') form.setFieldsValue({ password: '' });
+    // if (fieldName === 'username' && value) {
+    //   form.setFieldsValue({ username: value.replace(/[^\d]+/g, '') });
+    // } else if (fieldName === 'password' && value) {
+    //   form.setFieldsValue({ password: value.replace(/\s+/g, '') });
+    // }
+  }
+  const onValuesChange = (changedField: object) => {
+    // console.log(changedField);
+    const fieldName = Object.keys(changedField)[0];
+    const value = Object.values(changedField)[0];
+    if (fieldName === 'username') {
+      const username = value.replace(/[^\d]+/g, '');
+      form.setFieldsValue({ username, password: ''  });
+      setstate(true);
+    } else if (fieldName === 'password') {
+      setstate(true);
+      if (!state) form.setFieldsValue({ password: '' });
+      else form.setFieldsValue({ password: value.replace(/\s+/g, '') });
+    } else if (fieldName === 'remember') {
+      // console.log(value, state);
     }
   }
 
@@ -93,6 +109,7 @@ export default (props: { onLogin: (arg0: any) => any; }) => {
       validateTrigger="onBlur"
       onFinish={onFinish}
       onFieldsChange={onFieldsChange}
+      onValuesChange={onValuesChange}
     >
       <Form.Item
         name="username"

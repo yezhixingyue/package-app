@@ -76,7 +76,8 @@ class ComponentToPrint extends React.Component {
                 备注：{Content}
               </div>
               <div style={{height: '24mm', lineHeight: '12mm', fontSize: '18pt', overflow: 'hidden'}}>
-                保留此包裹时,代表您已签收并确认产品信息。售后:15689745125，打印时间{LastPrintTime}
+                保留此包裹时,代表您已签收并确认产品信息。
+                <p>打印时间{LastPrintTime}</p>
               </div>
             </li>
           </ul>
