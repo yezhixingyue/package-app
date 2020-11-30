@@ -26,6 +26,7 @@
     "axios": "^0.21.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "compression-webpack-plugin": "^6.1.1",
+    "jr-qrcode": "^1.1.4",
     "js-base64": "^3.5.2",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",

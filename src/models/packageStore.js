@@ -1,8 +1,11 @@
 import api from '../services';
 import delay from '../assets/js/utils/delay'
-import { isEmpty } from '../assets/js/utils/utils'
+import { isEmpty, formartDate } from '../assets/js/utils/utils'
 import model from '../assets/js/utils/model';
 import getDate from '../assets/js/date';
+import lodopPrint from '../assets/js/lodopPrint';
+
+const isWindowPrint = true;
 
 const setAndFilterDate = obj => {
   if (!obj.dateType) return;
@@ -44,6 +47,17 @@ const handlePrint = (orderID, packageID) => {
   }
 }
 
+const handleLodopPrint = (packageDate, orderData, userInfo) => {
+  const { Consignee, Mobile, AddressDetail, ExpressArea } = orderData.Address.Address;
+  const { RegionalName, CityName, CountyName } = ExpressArea;
+  const address = `${RegionalName}${CityName}${CountyName}${AddressDetail}`;
+  const { ProductName, ProductClass, SizeString, ProductAmount, Content, KindCount, Unit, Address, CustomerSN, CustomerName } = orderData;
+  const { StationSN, StationName, DistrictSN } = Address.Delivery;
+  const { ExpressText } = Address;
+  const LastPrintTime = formartDate(packageDate.LastPrintTime);
+  const PackageID = packageDate.PackageID;
+  lodopPrint({ StationSN, StationName, DistrictSN, CustomerSN, ExpressText, CustomerName, Consignee, Mobile, address, userInfo, ProductClass, ProductName, KindCount, ProductAmount, Unit, SizeString, Content, LastPrintTime, PackageID });
+}
 
 export default {
   state: {
@@ -345,9 +359,13 @@ export default {
         const user = yield select(state => state.loginInfo.userDetailInfo)
         const _tempObj = { ...res.data.Data, Printer: {ID: user.StaffID, Name: user.StaffName} };
         yield put({ type: 'addItemDataToPackageList', payload: { packageData: _tempObj, curOrderData, user }});
-        setTimeout(() => {
-          handlePrint(OrderID, res.data.Data.PackageID);
-        }, 100);
+        if (isWindowPrint) {
+          setTimeout(() => {
+            handlePrint(OrderID, res.data.Data.PackageID);
+          }, 100);
+        } else {
+          handleLodopPrint(_tempObj, curOrderData, user);
+        }
         return res.data.Data;
       }
       return false;
@@ -415,12 +433,17 @@ export default {
           console.log('重新打印');
           // 2个任务：  1. 重新打印标签  2. 在数据仓库中修改相应包裹的打印记录 
           const user = yield select(state => state.loginInfo.userDetailInfo)
+          // const curOrderData = yield select(state => state.packageStore.curPrintDiaInfo)
           const _tempObj = { ...packageRes.data.Data, Printer: {ID: user.StaffID, Name: user.StaffName} }
           yield put({ type: 'changeCurPrintOrderData', payload: orderRes.data.Data});
           yield put({ type: 'changeRePrintData', payload: { orderID, packageData: _tempObj }});
-          setTimeout(() => {
-            handlePrint(orderID, packageID);
-          }, 100);
+          if (isWindowPrint) {
+            setTimeout(() => {
+              handlePrint(orderID, packageID);
+            }, 100);
+          } else {
+            handleLodopPrint(_tempObj, orderRes.data.Data, user);
+          }
           return true;
         }
         return false;
