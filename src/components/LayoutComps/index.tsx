@@ -8,6 +8,9 @@ import MaskContainer from '@/components/container/MaskContainer';
 import zhCN from 'antd/lib/locale/zh_CN';
 import { ConfigProvider } from 'antd';
 import isChrome from '@/assets/js/utils/isChrome';
+// import dayjs from 'dayjs'
+// import 'dayjs/locale/zh-cn'
+// dayjs.locale('zh-cn')
 
 const _isChrome = isChrome();
 if(!_isChrome) {

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import styles from './index.less';
 import { Modal, DatePicker } from 'antd';
+// export { default as DatePicker } from '../DatePicker';
 import { history } from 'umi';
 import { SettingOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import format from 'moment';
+// import DatePicker from '../DatePicker';
+// import format from 'dayjs';
+
 
 const { RangePicker } = DatePicker;
 
@@ -94,7 +98,7 @@ export default function index(props: IProps) {
     <div className='gray'><SettingOutlined /><span className='is-font-15' style={{marginLeft: '10px'}}>设置自定义时间</span></div>
   )
 
-  const pickerVal = props.dateObj ? [ props.dateObj.First ? moment(props.dateObj.First): null, props.dateObj.Second ? moment(props.dateObj.Second): null ] : [null, null];
+  const pickerVal = props.dateObj ? [ props.dateObj.First ? format(props.dateObj.First): null, props.dateObj.Second ? format(props.dateObj.Second): null ] : [null, null];
 
   const defineTitle = props.dateObj && props.dateObj.First && props.dateObj.Second ? `${props.dateObj.First.slice(0, 10)}至${props.dateObj.Second.slice(0, 10)}` : '自定义时间';
 

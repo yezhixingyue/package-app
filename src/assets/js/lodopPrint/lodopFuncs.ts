@@ -81,17 +81,23 @@ export default function getLodop(oOBJECT?: { parentNode: { removeChild: (arg0: a
         if (needCLodop()) {
             try {
                 LODOP = getCLodop();
-            } catch (err) {}
-            if (!LODOP && document.readyState !== "complete") {
-                alert("网页还没下载完毕，请稍等一下再操作.");
-                return;
+            } catch (err) {
+                console.log(err);
+                alert('打印控件连接失败');
             }
+            // if (!LODOP && document.readyState !== "complete") {
+            //     alert("网页还没下载完毕，请稍等一下再操作.");
+            //     return;
+            // }
             if (!LODOP) {
-                document.body.innerHTML = strCLodopInstall_1 + (CLodopIsLocal ? strCLodopInstall_2 : "") + strCLodopInstall_3 + document.body.innerHTML;
+                console.log(LODOP, '!LODOP');
+                const oWrap = document.querySelector('.page-common-style-wrap');
+                if (oWrap) oWrap.innerHTML = strCLodopInstall_1 + (CLodopIsLocal ? strCLodopInstall_2 : "") + strCLodopInstall_3 + oWrap.innerHTML;
                 return;
             } else {
-                if (CLODOP.CVERSION < "3.0.6.0") {
-                    document.body.innerHTML = strCLodopUpdate + document.body.innerHTML;
+                if (LODOP.CVERSION < "3.0.6.0") {
+                    const oWrap = document.querySelector('.page-common-style-wrap');
+                    if (oWrap) oWrap.innerHTML = strCLodopUpdate + oWrap.innerHTML;
                 }
                 if (oEMBED && oEMBED.parentNode)
                     oEMBED.parentNode.removeChild(oEMBED);

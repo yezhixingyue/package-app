@@ -5,7 +5,7 @@ import model from '../assets/js/utils/model';
 import getDate from '../assets/js/date';
 import lodopPrint from '../assets/js/lodopPrint';
 
-const isWindowPrint = true;
+const isWindowPrint = false;
 
 const setAndFilterDate = obj => {
   if (!obj.dateType) return;
