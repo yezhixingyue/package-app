@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Modal, Tooltip } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import React from 'react';
 
@@ -103,6 +103,30 @@ export function showWarnWithoutMsg({title = '错误', onOk = () => {}, onCancel 
   });
 }
 
+export function PrintOrderIDConfirm({title = '注意', msg1= '',  msg2= '', onOk = () => {}, onCancel = () => {}, okText = '确定'}) {
+  Modal.confirm({
+    title,
+    icon: <>{iconWarn}</>,
+    content: <div>
+    <p>{msg1}</p>
+    <Tooltip title={msg2}>
+      <p>{msg2}</p>
+    </Tooltip>
+  </div>,
+    className: 'mp-show-confirm-message-box print-orderid-confirm-wrap',
+    okText,
+    cancelText: '取消',
+    maskClosable: true,
+    onOk() {
+      // console.log('OK');
+      if (onOk) onOk();
+    },
+    onCancel() {
+      // console.log('Cancel');
+      if (onCancel) onCancel();
+    },
+  });
+}
 
 
 export default {
@@ -111,4 +135,5 @@ export default {
   showConfirmWithoutMsg,
   showWarn,
   showWarnWithoutMsg,
+  PrintOrderIDConfirm,
 }

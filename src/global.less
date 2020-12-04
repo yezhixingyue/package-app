@@ -254,6 +254,28 @@ table {
       }
     }
   }
+  &.print-orderid-confirm-wrap {
+    > .ant-modal-content {
+      .ant-modal-confirm-content {
+        font-size: 14px !important;
+        > div {
+          > p {
+            color: #444;
+            margin-top: 4px;
+            &:last-of-type {
+              line-height: 24px;
+              max-height: 58px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              padding: 4px 15px;
+              // white-space: nowrap;
+              margin-bottom: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 // 全局loading样式设置

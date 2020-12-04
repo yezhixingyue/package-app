@@ -18,9 +18,11 @@ const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: string | o
       const res = await dispatch({ type: 'packageStore/getPrintPackageOrderInfo', payload: orderId });
       if (res && typeof res === 'object') {
         if (shouldCheck) {
-          model.showConfirm({
+          console.log(res.Content);
+          model.PrintOrderIDConfirm({
             title: '请确认订单信息是否正确!',
-            msg: `生产工厂：[ ${res.Factory.Name} ]，文件内容：[ ${res.Content} ]`,
+            msg1: `生产工厂：[ ${res.Factory.Name} ]`,
+            msg2: `${res.Content}`,
             okText: '确认无误',
             onOk: async () => {
               if (res.UnPrintKindCount === 1) { // 剩余只有1款未打印时， 直接获取打印信息进行打印
