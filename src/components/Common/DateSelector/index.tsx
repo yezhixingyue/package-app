@@ -7,6 +7,7 @@ import { SettingOutlined } from '@ant-design/icons';
 import format from 'moment';
 // import DatePicker from '../DatePicker';
 // import format from 'dayjs';
+// import { format } from 'date-fns';
 
 
 const { RangePicker } = DatePicker;
@@ -97,7 +98,7 @@ export default function index(props: IProps) {
   const Title = (
     <div className='gray'><SettingOutlined /><span className='is-font-15' style={{marginLeft: '10px'}}>设置自定义时间</span></div>
   )
-
+  // console.log(props.dateObj.First, props.dateObj.Second, format(props.dateObj.First.split('T')[0]), format(props.dateObj.Second.split('T')[0]));
   const pickerVal = props.dateObj ? [ props.dateObj.First ? format(props.dateObj.First): null, props.dateObj.Second ? format(props.dateObj.Second): null ] : [null, null];
 
   const defineTitle = props.dateObj && props.dateObj.First && props.dateObj.Second ? `${props.dateObj.First.slice(0, 10)}至${props.dateObj.Second.slice(0, 10)}` : '自定义时间';
@@ -129,6 +130,8 @@ export default function index(props: IProps) {
           value={pickerVal}
           onChange={handleDatePickerChange}
          />
+         
+         {/* value={pickerVal} */}
       </Modal>
     </div>
   )

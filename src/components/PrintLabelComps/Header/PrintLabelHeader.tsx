@@ -6,7 +6,7 @@ import { debounce } from '@/assets/js/utils/throttle';
 import  model from '@/assets/js/utils/model';
 
 interface IProps {
-  getPrintPackageOrderInfo: (orderId: string) => void,
+  getPrintPackageOrderInfo: (orderId: string, shouldCheck: boolean) => void,
   handlePackageSearch: (keyword: string) => void,
   searchWords: string,
   setPrintLabelSearchWords: (keyword: string) => void,
@@ -59,17 +59,19 @@ export default function PrintLabelHeader(props: IProps) {
       return;
     }
     if (state.startTime && Date.now() - state.startTime > 1200) {
-      model.showConfirm({
-        title: '订单号信息核对',
-        msg: `请检查订单号 [ ${state.inpOrderVal} ] 是否输入无误 ?`,
-        okText: '确认无误',
-        onOk: () => {
-          props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal);
-          onInpChange('');
-        },
-      })
+      // model.showConfirm({
+      //   title: '订单号信息核对',
+      //   msg: `请检查订单号 [ ${state.inpOrderVal} ] 是否输入无误 ?`,
+      //   okText: '确认无误',
+      //   onOk: () => {
+      //     props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal);
+      //     onInpChange('');
+      //   },
+      // })
+      props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal, true);
+      onInpChange('');
     } else {
-      props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal);
+      props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal, false);
       onInpChange('');
     }
     
@@ -81,15 +83,17 @@ export default function PrintLabelHeader(props: IProps) {
       message.error('订单号输入长度最少为9位!');
       return;
     }
-    model.showConfirm({
-      title: '订单号信息核对',
-      msg: `请检查订单号 [ ${state.inpOrderVal} ] 是否输入无误?`,
-      okText: '确认无误',
-      onOk: () => {
-        props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal);
-        onInpChange('');
-      },
-    })
+    // model.showConfirm({
+    //   title: '订单号信息核对',
+    //   msg: `请检查订单号 [ ${state.inpOrderVal} ] 是否输入无误?`,
+    //   okText: '确认无误',
+    //   onOk: () => {
+    //     props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal);
+    //     onInpChange('');
+    //   },
+    // })
+    props.getPrintPackageOrderInfo && props.getPrintPackageOrderInfo(state.inpOrderVal, true);
+    onInpChange('');
   }
 
   const handleOrderSearch = () => {
