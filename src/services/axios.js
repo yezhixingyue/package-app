@@ -93,7 +93,7 @@ axios.interceptors.response.use(
 
       // console.log(error.response);
       const _url = error.response.config.url.split('?')[0];
-      let _msg = '错误';
+      let _msg = '操作失败';
       if (_url === '/Api/Staff/Login') _msg = '登录失败';
       if (_url === '/Api/Staff/Detail') _msg = '获取用户信息失败';
       if (_url === '/Api/PrintPackage/OrderInfo') _msg = '打印失败';
@@ -114,12 +114,12 @@ axios.interceptors.response.use(
           if (buffterRes && buffterRes.currentTarget && buffterRes.currentTarget.result) {
             buffterErr = buffterRes.currentTarget.result;
           }
-          model.showWarn({ title: _msg, msg: `[ 错误 413：${buffterErr} ]` });
+          model.showWarn({ title: _msg, msg: `${buffterErr}` });
           // alert(`错误 413：${buffterErr}`);
           key = true;
           break;
         default:
-          model.showWarn({ title: _msg, msg: `[ 错误代码${error.response.status}：${error.response.statusText}]` });
+          model.showWarn({ title: _msg, msg: `[ ${error.response.data && error.response.data.Message ? error.response.data.Message : error.response.statusText}` });
           // alert(`[ 错误代码${error.response.status}：${error.response.statusText}]`);
           key = true;
           break;
